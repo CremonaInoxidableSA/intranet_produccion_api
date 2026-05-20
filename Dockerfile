@@ -16,12 +16,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar el código fuente
 COPY . .
 
-# Variables de entorno por defecto (sobreescribibles en runtime)
+# Variables de entorno por defecto (sobreescribibles en runtime con --env-file)
 ENV DB_HOST=localhost \
     DB_PORT=3306 \
     DB_NAME=cr_produccion \
     DB_USER=root \
-    DB_PASSWORD=echo32415 \
+    DB_PASSWORD=changeme \
     FRONTEND_IP=localhost
 
 EXPOSE 8007
