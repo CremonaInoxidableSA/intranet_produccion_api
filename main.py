@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, text
+from urllib.parse import quote_plus
 import os
 from dotenv import load_dotenv
 
@@ -15,7 +16,7 @@ from models.operarios import Operarios
 load_dotenv()
 
 with create_engine(
-    f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}"
+    f"mysql+pymysql://{os.getenv('DB_USER')}:{quote_plus(os.getenv('DB_PASSWORD', ''))}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}"
 ).connect() as connection:
     connection.execute(text(f"CREATE DATABASE IF NOT EXISTS {os.getenv('DB_NAME')}"))
     print(f"✓ Base de datos '{os.getenv('DB_NAME')}' verificada o creada exitosamente")

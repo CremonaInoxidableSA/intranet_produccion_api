@@ -14,3 +14,15 @@ FLUSH PRIVILEGES;
 1. API BDD
 2. API DATOS
 3. FRONT
+
+# RUNNEO DE CONTENEDOR DESDE 0
+# 1. Clonar/copiar el proyecto y crear el .env con las credenciales reales
+# 2.
+docker build -t produccion-cremona_bdd .
+# 3.
+docker run -d \
+  --name produccion-cremona_bdd \
+  --network=host \
+  --env-file .env \
+  --restart unless-stopped \
+  produccion-cremona_bdd

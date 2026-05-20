@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
+from urllib.parse import quote_plus
 import os
 import time
 from sqlalchemy.exc import OperationalError
@@ -9,7 +10,7 @@ from sqlalchemy.exc import OperationalError
 load_dotenv()
 
 db_user = os.getenv("DB_USER")
-db_password = os.getenv("DB_PASSWORD")
+db_password = quote_plus(os.getenv("DB_PASSWORD", ""))
 db_host = os.getenv("DB_HOST", "localhost")
 db_port = os.getenv("DB_PORT", "3306")
 db_name = os.getenv("DB_NAME")

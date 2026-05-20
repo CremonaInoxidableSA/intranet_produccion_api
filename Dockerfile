@@ -21,7 +21,7 @@ ENV DB_HOST=localhost \
     DB_PORT=3306 \
     DB_NAME=cr_produccion \
     DB_USER=root \
-    DB_PASSWORD=changeme \
+    DB_PASSWORD=Rfc@32415 \
     FRONTEND_IP=localhost
 
 EXPOSE 8007
