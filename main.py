@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from config import db
 from config.sql_loader import cargar_datos_iniciales
 from routes.tareas import router as tareas_router
+from routes.operarios import router as operarios_router
 
 from models.usuarios import Usuarios
 from models.tareas import Tareas
@@ -40,6 +41,7 @@ app.add_middleware(
 )
 
 app.include_router(tareas_router)
+app.include_router(operarios_router)
 
 
 @app.get("/")

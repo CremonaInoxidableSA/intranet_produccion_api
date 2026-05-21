@@ -8,3 +8,4 @@ class Operarios(Base):
     nombre = Column(String(100), nullable=True)
     legajo = Column(String(100), nullable=True)
     sector = Column(String(100), nullable=True)
+    habilitado = Column(Boolean, default=True)
