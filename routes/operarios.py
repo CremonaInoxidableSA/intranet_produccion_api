@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from config.db import SessionLocal
 from models.operarios import Operarios
+from models.sectores import Sectores
 from pydantic import BaseModel
 from typing import List, Optional
 
@@ -21,27 +22,52 @@ class OperarioCreate(BaseModel):
     sector: str
 
 
-@router.get("")
+@router.get("/lista-operarios-habilitados")
 def get_operarios():
-    """Obtiene el listado de todos los operarios."""
+    """Obtiene el listado de todos los operarios habilitados."""
     db = SessionLocal()
     try:
-        operarios = db.query(Operarios).all()
+        rows = (
+            db.query(Operarios, Sectores.nombre)
+            .outerjoin(Sectores, Operarios.id_sector == Sectores.id_sector)
+            .filter(Operarios.habilitado == True)
+            .all()
+        )
         return [
             {
-                "id_operario": o.id_operario,
                 "nombre": o.nombre,
                 "legajo": o.legajo,
-                "sector": o.sector,
-                "habilitado": o.habilitado,
+                "sector": sector_nombre
             }
-            for o in operarios
+            for o, sector_nombre in rows
         ]
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
     finally:
         db.close()
 
+@router.get("/lista-operarios-total")
+def get_operarios_total():
+    """Obtiene el listado de todos los operarios, sin importar si están habilitados o no."""
+    db = SessionLocal()
+    try:
+        rows = (
+            db.query(Operarios, Sectores.nombre)
+            .outerjoin(Sectores, Operarios.id_sector == Sectores.id_sector)
+            .all()
+        )
+        return [
+            {
+                "nombre": o.nombre,
+                "legajo": o.legajo,
+                "sector": sector_nombre
+            }
+            for o, sector_nombre in rows
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
+    finally:
+        db.close()
 
 @router.put("/editar-operario")
 def editar_operario(operarios: List[OperarioUpdate]):

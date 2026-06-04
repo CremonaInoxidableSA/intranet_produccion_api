@@ -9,10 +9,17 @@ from config import db
 from config.sql_loader import cargar_datos_iniciales
 from routes.tareas import router as tareas_router
 from routes.operarios import router as operarios_router
+from routes.home import router as home_router
+from routes.sectores import router as sector_router
+from routes.productos import router as productos_router
 
 from models.usuarios import Usuarios
 from models.tareas import Tareas
 from models.operarios import Operarios
+from models.labores import Labores
+from models.productos import Productos
+from models.sectores import Sectores
+from models.roles import roles
 
 load_dotenv()
 
@@ -42,7 +49,9 @@ app.add_middleware(
 
 app.include_router(tareas_router)
 app.include_router(operarios_router)
-
+app.include_router(home_router)
+app.include_router(sector_router)
+app.include_router(productos_router)
 
 @app.get("/")
 def read_root():

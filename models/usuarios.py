@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from config.db import Base
 
 class Usuarios(Base):
@@ -9,6 +9,6 @@ class Usuarios(Base):
     usuario = Column(String(100), nullable=True)
     nombre = Column(String(100), nullable=True)
     apellido = Column(String(100), nullable=True)
-    rol = Column(String(100), nullable=True)
+    rol = Column(String(100), ForeignKey("roles.rol"), nullable=True)
     password_hash = Column(String(255), nullable=True)
     habilitado = Column(Boolean, default=True)

@@ -26,3 +26,8 @@ docker run -d \
   --env-file .env \
   --restart unless-stopped \
   produccion-cremona_bdd
+
+# NUEVO USUARIO MYSQL
+CREATE USER 'root'@'192.168.20.150' IDENTIFIED BY 'echo32415';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.20.150' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
