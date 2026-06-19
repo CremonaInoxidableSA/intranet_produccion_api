@@ -7,19 +7,13 @@ from dotenv import load_dotenv
 
 from config import db
 from config.sql_loader import cargar_datos_iniciales
-from routes.tareas import router as tareas_router
-from routes.operarios import router as operarios_router
-from routes.home import router as home_router
 from routes.sectores import router as sector_router
 from routes.productos import router as productos_router
 
-from models.usuarios import Usuarios
 from models.tareas import Tareas
-from models.operarios import Operarios
 from models.labores import Labores
 from models.productos import Productos
 from models.sectores import Sectores
-from models.roles import roles
 
 load_dotenv()
 
@@ -29,9 +23,9 @@ with create_engine(
     connection.execute(text(f"CREATE DATABASE IF NOT EXISTS {os.getenv('DB_NAME')}"))
     print(f"✓ Base de datos '{os.getenv('DB_NAME')}' verificada o creada exitosamente")
 
-#db.Base.metadata.drop_all(bind=db.engine)
+db.Base.metadata.drop_all(bind=db.engine)
 db.Base.metadata.create_all(bind=db.engine)
-#cargar_datos_iniciales()
+cargar_datos_iniciales()
 
 app = FastAPI(title="API cr_produccion", version="1.0.0")
 
@@ -47,9 +41,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(tareas_router)
-app.include_router(operarios_router)
-app.include_router(home_router)
 app.include_router(sector_router)
 app.include_router(productos_router)
 
