@@ -2,9 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from config.db import SessionLocal
 from models.productos import Productos
-from models.labores import Labores
-from sqlalchemy import func
-import json
+from models.productos_sectores import ProductosSectores
 
 router = APIRouter(prefix="/productos", tags=["productos"])
 
@@ -14,7 +12,10 @@ def get_productos_total(id_sector: int):
     db = SessionLocal()
     try:
         rows = (
-            db.query(Productos).filter(func.JSON_CONTAINS(Productos.sectores, json.dumps(id_sector))).all()
+            db.query(Productos)
+            .join(ProductosSectores, Productos.id_producto == ProductosSectores.id_producto)
+            .filter(ProductosSectores.id_sector == id_sector)
+            .all()
         )
         return [
             {
@@ -22,27 +23,6 @@ def get_productos_total(id_sector: int):
                 "nombre": p.nombre
             }
             for p in rows
-        ]
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
-    finally:
-        db.close()
-
-@router.get("/lista-labores")
-def get_labores_total(id_sector: int, id_producto: int):
-    """Obtiene el listado de labores filtrado por `id_sector` e `id_producto`."""
-    db = SessionLocal()
-    try:
-        rows = db.query(Labores).filter(
-            Labores.id_sector == id_sector,
-            Labores.id_producto == id_producto,
-        ).all()
-        return [
-            {
-                "id_labor": l.id_labor,
-                "nombre": l.nombre
-            }
-            for l in rows
         ]
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
