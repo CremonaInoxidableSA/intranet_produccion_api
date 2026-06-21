@@ -7,9 +7,14 @@ from dotenv import load_dotenv
 
 from config import db
 from config.sql_loader import cargar_datos_iniciales
+
 from routes.sectores import router as sector_router
 from routes.productos import router as productos_router
 from routes.labores import router as labores_router
+
+from routes.comprobaciones import router as comprobaciones_router
+
+from routes.tareas.pausarreanudar import router as pausarreanudar_router
 
 from models.tareas import Tareas
 from models.labores import Labores
@@ -46,17 +51,5 @@ app.add_middleware(
 app.include_router(sector_router)
 app.include_router(productos_router)
 app.include_router(labores_router)
-@app.get("/")
-def read_root():
-    try:
-        with db.engine.connect() as connection:
-            connection.execute(text("SELECT 1"))
-        estado_bdd = "Conectado"
-    except Exception as e:
-        estado_bdd = f"Desconectado - {str(e)}"
-
-    return {
-        "value": "API cr_produccion",
-        "Estado BDD": estado_bdd,
-        "version": "1.0.0",
-    }
+app.include_router(pausarreanudar_router)
+app.include_router(comprobaciones_router)

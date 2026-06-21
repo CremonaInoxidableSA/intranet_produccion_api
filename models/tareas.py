@@ -5,9 +5,12 @@ class Tareas(Base):
     __tablename__ = "tareas"
 
     id_tarea = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    nombre_usuario_logeado = Column(String(100), nullable=True)
-    apellido_usuario_logeado = Column(String(100), nullable=True)
-    operario_seleccionado = Column(String(200), nullable=True)
+    id_usuario_logeado = Column(Integer, nullable=False)
+    nombre_usuario_logeado = Column(String(100), nullable=False)
+    apellido_usuario_logeado = Column(String(100), nullable=False)
+    id_operario_seleccionado = Column(Integer, nullable=False)
+    nombre_operario_seleccionado = Column(String(100), nullable=False)
+    apellido_operario_seleccionado = Column(String(100), nullable=False)
     numero_op = Column(Integer, nullable=True)
     numero_plano = Column(Integer, nullable=True)
     id_producto = Column(Integer, ForeignKey("productos.id_producto"), nullable=True)
