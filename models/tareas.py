@@ -15,9 +15,10 @@ class Tareas(Base):
     numero_plano = Column(Integer, nullable=False)
     id_producto = Column(Integer, ForeignKey("productos.id_producto"), nullable=False)
     id_labor = Column(Integer, ForeignKey("labores.id_labor"), nullable=False)
+    estado = Column(String(100), nullable=False, default="activa")  # Puede ser "activa", "pausada" o "finalizada"
     descripcion= Column(String(255), nullable=True)
     fecha_inicio = Column(DateTime, nullable=False)
     fecha_fin = Column(DateTime, nullable=True)
-    tiempo_extra = Column(Integer, nullable=True)
-    duracion_tarea = Column(Integer, nullable=True)
+    tiempo_extra = Column(String(100), nullable=True)
+    duracion_tarea = Column(String(100), nullable=True)
     pausas_reanudaciones = Column(JSON, nullable=True)

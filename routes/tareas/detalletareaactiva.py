@@ -24,6 +24,10 @@ def obtener_detalle_tarea(id_tarea: int):
         if not tarea:
             raise HTTPException(status_code=404, detail=f"Tarea con id {id_tarea} no encontrada")
         
+        # Verificar que la tarea no esté finalizada
+        if tarea.fecha_fin is not None:
+            raise HTTPException(status_code=400, detail=f"Tarea con id {id_tarea} ya se encuentra finalizada")
+        
         # Obtener datos relacionados
         producto = db.query(Productos).filter(Productos.id_producto == tarea.id_producto).first() if tarea.id_producto else None
         labor = db.query(Labores).filter(Labores.id_labor == tarea.id_labor).first() if tarea.id_labor else None
@@ -39,7 +43,8 @@ def obtener_detalle_tarea(id_tarea: int):
             "nombre_producto": producto.nombre,
             "nombre_labor": labor.nombre,
             "descripcion": tarea.descripcion if tarea.descripcion else "",
-            "tiempo_extra": tarea.tiempo_extra if tarea.tiempo_extra else 0
+            "tiempo_extra": tarea.tiempo_extra if tarea.tiempo_extra else "00:00:00",
+            "estado": tarea.estado
             }        
 
     except HTTPException:

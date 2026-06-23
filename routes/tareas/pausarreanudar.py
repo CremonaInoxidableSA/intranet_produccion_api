@@ -40,6 +40,7 @@ def pausar_tarea(id_tarea: int):
         
         # Agregar el timestamp actual
         tarea.pausas_reanudaciones.append(datetime.now().isoformat())
+        tarea.estado = "pausada"
         
         db.commit()
         db.refresh(tarea)
@@ -89,12 +90,13 @@ def reanudar_tarea(id_tarea: int):
         
         # Agregar el timestamp actual
         tarea.pausas_reanudaciones.append(datetime.now().isoformat())
+        tarea.estado = "activa"
         
         db.commit()
         db.refresh(tarea)
         
         return {
-            "estado": "reanudada",
+            "estado": "activa",
             "mensaje": "Tarea reanudada correctamente"
         }
     
