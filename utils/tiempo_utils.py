@@ -76,3 +76,29 @@ def formato_hhmmss(segundos):
     minutos = (segundos % 3600) // 60
     secs = segundos % 60
     return f"{horas:02d}:{minutos:02d}:{secs:02d}"
+
+
+def hhmmss_a_segundos(tiempo_str):
+    """
+    Convierte una cadena en formato HH:MM:SS a segundos.
+    
+    Args:
+        tiempo_str (str): Tiempo en formato HH:MM:SS (ejemplo: "01:30:45")
+        
+    Returns:
+        int: Tiempo en segundos
+    """
+    if not tiempo_str:
+        return 0
+    
+    partes = tiempo_str.split(":")
+    if len(partes) != 3:
+        return 0
+    
+    try:
+        horas = int(partes[0])
+        minutos = int(partes[1])
+        segundos = int(partes[2])
+        return horas * 3600 + minutos * 60 + segundos
+    except ValueError:
+        return 0
