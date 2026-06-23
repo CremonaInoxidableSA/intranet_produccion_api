@@ -17,6 +17,7 @@ from routes.comprobaciones import router as comprobaciones_router
 from routes.tareas.pausarreanudar import router as pausarreanudar_router
 from routes.tareas.eliminar import router as eliminar_router
 from routes.tareas.listadotareaspersonal import router as listadotareaspersonal_router
+from routes.tareas.detalletareaactiva import router as detalletareaactiva_router
 
 from models.tareas import Tareas
 from models.labores import Labores
@@ -56,4 +57,5 @@ app.include_router(labores_router)
 app.include_router(pausarreanudar_router)
 app.include_router(eliminar_router)
 app.include_router(listadotareaspersonal_router)
+app.include_router(detalletareaactiva_router)
 app.include_router(comprobaciones_router)

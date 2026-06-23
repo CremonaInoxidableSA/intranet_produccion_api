@@ -17,13 +17,17 @@ def get_productos_total(id_sector: int):
             .filter(ProductosSectores.id_sector == id_sector)
             .all()
         )
-        return [
+        result = [{
+            "id_producto": 0,
+            "nombre": "Otro"
+        }] + [
             {
                 "id_producto": p.id_producto,
                 "nombre": p.nombre
             }
             for p in rows
         ]
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
     finally:
