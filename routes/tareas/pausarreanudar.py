@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from config.db import SessionLocal
 from models.tareas import Tareas
 from datetime import datetime
+from sqlalchemy.orm.attributes import flag_modified
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
@@ -35,11 +36,10 @@ def pausar_tarea(id_tarea: int):
             raise HTTPException(status_code=400, detail="La tarea ya está pausada, no se puede pausar nuevamente")
         
         # Inicializar o agregar al array pausas_reanudaciones
-        if tarea.pausas_reanudaciones is None:
-            tarea.pausas_reanudaciones = []
-        
-        # Agregar el timestamp actual
-        tarea.pausas_reanudaciones.append(datetime.now().isoformat())
+        pausas = tarea.pausas_reanudaciones if tarea.pausas_reanudaciones else []
+        pausas.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        tarea.pausas_reanudaciones = pausas
+        flag_modified(tarea, "pausas_reanudaciones")
         tarea.estado = "pausada"
         
         db.commit()
@@ -89,7 +89,10 @@ def reanudar_tarea(id_tarea: int):
             raise HTTPException(status_code=400, detail="La tarea ya está en ejecución")
         
         # Agregar el timestamp actual
-        tarea.pausas_reanudaciones.append(datetime.now().isoformat())
+        pausas = tarea.pausas_reanudaciones
+        pausas.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        tarea.pausas_reanudaciones = pausas
+        flag_modified(tarea, "pausas_reanudaciones")
         tarea.estado = "activa"
         
         db.commit()
