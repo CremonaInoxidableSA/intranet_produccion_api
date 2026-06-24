@@ -5,6 +5,7 @@ from config.db import SessionLocal
 from models.tareas import Tareas
 from models.sectores import Sectores
 from models.productos import Productos
+from models.productos_sectores import ProductosSectores
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
@@ -30,6 +31,7 @@ def crear_tarea(tarea_data: CrearTareaRequest):
     Validaciones:
     - id_sector debe existir
     - id_producto debe existir
+    - id_producto e id_sector deben estar relacionados en productos_sectores
     - tiempo_extra debe estar en formato HH:MM:SS
     - descripcion no debe superar 255 caracteres
     
@@ -38,17 +40,21 @@ def crear_tarea(tarea_data: CrearTareaRequest):
     """
     db = SessionLocal()
     try:
-        # Validar que id_sector exista
         sector = db.query(Sectores).filter(Sectores.id_sector == tarea_data.id_sector).first()
         if not sector:
             raise HTTPException(status_code=400, detail=f"Sector con id {tarea_data.id_sector} no existe")
         
-        # Validar que id_producto exista
         producto = db.query(Productos).filter(Productos.id_producto == tarea_data.id_producto).first()
         if not producto:
             raise HTTPException(status_code=400, detail=f"Producto con id {tarea_data.id_producto} no existe")
         
-        # Validar formato HH:MM:SS de tiempo_extra
+        producto_sector = db.query(ProductosSectores).filter(
+            ProductosSectores.id_producto == tarea_data.id_producto,
+            ProductosSectores.id_sector == tarea_data.id_sector
+        ).first()
+        if not producto_sector:
+            raise HTTPException(status_code=400, detail=f"El producto con id {tarea_data.id_producto} no está disponible para el sector con id {tarea_data.id_sector}")
+        
         partes = tarea_data.tiempo_extra.split(":")
         if len(partes) != 3:
             raise HTTPException(status_code=400, detail="Formato tiempo_extra inválido. Debe ser HH:MM:SS")
@@ -63,11 +69,9 @@ def crear_tarea(tarea_data: CrearTareaRequest):
         except ValueError:
             raise HTTPException(status_code=400, detail="Formato tiempo_extra inválido. Valores no numéricos o fuera de rango")
         
-        # Validar longitud de descripción
         if len(tarea_data.descripcion) > 255:
-            raise HTTPException(status_code=400, detail=f"La descripción no puede superar 255 caracteres. Actual: {len(tarea_data.descripcion)}")
+            raise HTTPException(status_code=400, detail=f"La descripción no puede superar 255 caracteres.")
         
-        # Crear la nueva tarea
         nueva_tarea = Tareas(
             id_usuario_logeado=tarea_data.id_usuario_logeado,
             nombre_usuario_logeado=tarea_data.nombre_usuario_logeado,
