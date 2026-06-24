@@ -13,7 +13,6 @@ def obtener_tareas_usuario(id_current_user: int):
     """
     db = SessionLocal()
     try:
-        # Obtener tareas sin fecha_fin asignadas al usuario actual
         tareas = db.query(Tareas).filter(
             Tareas.id_usuario_logeado == id_current_user,
             Tareas.fecha_fin == None

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from datetime import datetime
 from config.db import SessionLocal
@@ -42,22 +43,22 @@ def crear_tarea(tarea_data: CrearTareaRequest):
     try:
         sector = db.query(Sectores).filter(Sectores.id_sector == tarea_data.id_sector).first()
         if not sector:
-            raise HTTPException(status_code=400, detail=f"Sector con id {tarea_data.id_sector} no existe")
+            return JSONResponse(status_code=400, content={"success": False, "detail": f"Sector con id {tarea_data.id_sector} no existe"})
         
         producto = db.query(Productos).filter(Productos.id_producto == tarea_data.id_producto).first()
         if not producto:
-            raise HTTPException(status_code=400, detail=f"Producto con id {tarea_data.id_producto} no existe")
+            return JSONResponse(status_code=400, content={"success": False, "detail": f"Producto con id {tarea_data.id_producto} no existe"})
         
         producto_sector = db.query(ProductosSectores).filter(
             ProductosSectores.id_producto == tarea_data.id_producto,
             ProductosSectores.id_sector == tarea_data.id_sector
         ).first()
         if not producto_sector:
-            raise HTTPException(status_code=400, detail=f"El producto con id {tarea_data.id_producto} no está disponible para el sector con id {tarea_data.id_sector}")
+            return JSONResponse(status_code=400, content={"success": False, "detail": f"El producto con id {tarea_data.id_producto} no está disponible para el sector con id {tarea_data.id_sector}"})
         
         partes = tarea_data.tiempo_extra.split(":")
         if len(partes) != 3:
-            raise HTTPException(status_code=400, detail="Formato tiempo_extra inválido. Debe ser HH:MM:SS")
+            return JSONResponse(status_code=400, content={"success": False, "detail": "Formato tiempo_extra inválido. Debe ser HH:MM:SS"})
         
         try:
             horas = int(partes[0])
@@ -67,10 +68,10 @@ def crear_tarea(tarea_data: CrearTareaRequest):
             if not (0 <= horas <= 23 and 0 <= minutos <= 59 and 0 <= segundos <= 59):
                 raise ValueError("Valores fuera de rango")
         except ValueError:
-            raise HTTPException(status_code=400, detail="Formato tiempo_extra inválido. Valores no numéricos o fuera de rango")
+            return JSONResponse(status_code=400, content={"success": False, "detail": "Formato tiempo_extra inválido. Valores no numéricos o fuera de rango"})
         
         if len(tarea_data.descripcion) > 255:
-            raise HTTPException(status_code=400, detail=f"La descripción no puede superar 255 caracteres.")
+            return JSONResponse(status_code=400, content={"success": False, "detail": "La descripción no puede superar 255 caracteres."})
         
         nueva_tarea = Tareas(
             id_usuario_logeado=tarea_data.id_usuario_logeado,
@@ -95,6 +96,7 @@ def crear_tarea(tarea_data: CrearTareaRequest):
         db.refresh(nueva_tarea)
         
         return {
+            "success": True,
             "mensaje": "Tarea creada correctamente",
             "id_tarea": nueva_tarea.id_tarea
         }
@@ -104,6 +106,6 @@ def crear_tarea(tarea_data: CrearTareaRequest):
         raise
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
+        return JSONResponse(status_code=500, content={"success": False, "detail": f"Error interno del servidor: {str(e)}"})
     finally:
         db.close()
