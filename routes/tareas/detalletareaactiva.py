@@ -3,7 +3,6 @@ from datetime import datetime
 from config.db import SessionLocal
 from models.tareas import Tareas
 from models.productos import Productos
-from models.labores import Labores
 from models.sectores import Sectores
 from utils.tiempo_utils import calcular_tiempo_cronometrado, formato_hhmmss
 
@@ -14,7 +13,7 @@ def obtener_detalle_tarea(id_tarea: int):
     """Obtiene todos los detalles de una tarea específica.
     
     Devuelve todos los campos de la tarea incluyendo los nombres de 
-    productos, labores y sectores asociados.
+    productos y sectores asociados.
     """
     db = SessionLocal()
     try:
@@ -30,18 +29,17 @@ def obtener_detalle_tarea(id_tarea: int):
         
         # Obtener datos relacionados
         producto = db.query(Productos).filter(Productos.id_producto == tarea.id_producto).first() if tarea.id_producto else None
-        labor = db.query(Labores).filter(Labores.id_labor == tarea.id_labor).first() if tarea.id_labor else None
-        sector = db.query(Sectores).filter(Sectores.id_sector == labor.id_sector).first() if labor and labor.id_sector else None
+        sector = db.query(Sectores).filter(Sectores.id_sector == tarea.id_sector).first() if tarea.id_sector else None
         
         return {
             "id_tarea": tarea.id_tarea,
             "nombre_operario_seleccionado": tarea.nombre_operario_seleccionado,
             "apellido_operario_seleccionado": tarea.apellido_operario_seleccionado,
-            "nombre_sector": sector.nombre,
+            "nombre_sector": sector.nombre if sector else None,
             "numero_op": tarea.numero_op,
             "numero_plano": tarea.numero_plano,
-            "nombre_producto": producto.nombre,
-            "nombre_labor": labor.nombre,
+            "nombre_producto": producto.nombre if producto else None,
+            "nombre_labor": tarea.nombre_labor,
             "descripcion": tarea.descripcion if tarea.descripcion else "",
             "tiempo_extra": tarea.tiempo_extra if tarea.tiempo_extra else "00:00:00",
             "estado": tarea.estado

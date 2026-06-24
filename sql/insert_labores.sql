@@ -4,4 +4,5 @@ INSERT INTO labores (id_labor, id_sector, id_producto, nombre) VALUES
 (3, 2, 1, "Labor2"),
 (4, 3, 1, "Labor3"),
 (5, 4, 1, "Labor4"),
+(6, 1, 3, "Labor5"),
 (7, 5, 1, "Granallado");

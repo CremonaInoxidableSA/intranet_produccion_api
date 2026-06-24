@@ -21,6 +21,7 @@ from routes.tareas.detalletareaactiva import router as detalletareaactiva_router
 from routes.tareas.reiniciartiempo import router as reiniciartiempo_router
 from routes.tareas.finalizartarea import router as finalizartarea_router
 from routes.tareas.guardacambios import router as guardacambios_router
+from routes.tareas.creartarea import router as creartarea_router
 
 from models.tareas import Tareas
 from models.labores import Labores
@@ -59,6 +60,7 @@ app.include_router(productos_router)
 app.include_router(labores_router)
 app.include_router(pausarreanudar_router)
 app.include_router(eliminar_router)
+app.include_router(creartarea_router)
 app.include_router(detalletareaactiva_router)
 app.include_router(reiniciartiempo_router)
 app.include_router(finalizartarea_router)

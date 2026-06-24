@@ -1,6 +1,6 @@
-INSERT INTO tareas (id_tarea, id_usuario_logeado, nombre_usuario_logeado, apellido_usuario_logeado, id_operario_seleccionado, nombre_operario_seleccionado, apellido_operario_seleccionado, numero_op, numero_plano, id_producto, id_labor, descripcion, fecha_inicio, fecha_fin, duracion_tarea, pausas_reanudaciones, estado) VALUES
-(1, 1, "Leandro", "Jakimiuk", 1, "Juan", "Perez", 101, 201, 1, 1, 'Tarea sin pausas', '2026-06-23 08:00:00', NULL, NULL, NULL, 'activa'),
-(2, 1, "Leandro", "Jakimiuk", 1, "Carlos", "Garcia", 102, 202, 1, 1, 'Tarea finalizada', '2026-06-23 08:00:00', NULL, NULL, '["2026-06-23 09:00:00"]', 'activa'),
-(3, 1, "Leandro", "Jakimiuk", 3, "Maria", "Lopez", 103, 203, 1, 1, 'Tarea con 2 pausas', '2026-06-23 09:00:00', NULL, NULL, '["2026-06-23 09:30:00","2026-06-23 10:00:00"]', 'activa'),
-(4, 1, "Leandro", "Jakimiuk", 4, "Ana", "Martinez", 104, 204, 1, 2, 'Tarea con 3 pausas', '2026-06-23 09:30:00', NULL, NULL, '["2026-06-23 10:00:00","2026-06-23 10:30:00","2026-06-23 11:00:00"]', 'pausada'),
-(5, 1, "Leandro", "Jakimiuk", 5, "Roberto", "Sanchez", 105, 205, 1, 2, 'Tarea con 4 pausas', '2026-06-23 10:00:00', NULL, NULL, '["2026-06-23 10:30:00","2026-06-23 11:00:00","2026-06-23 11:30:00","2026-06-23 12:00:00"]', 'activa');
+INSERT INTO tareas (id_tarea, id_usuario_logeado, nombre_usuario_logeado, apellido_usuario_logeado, id_operario_seleccionado, nombre_operario_seleccionado, apellido_operario_seleccionado, numero_op, numero_plano, id_sector, id_producto, nombre_labor, descripcion, fecha_inicio, fecha_fin, duracion_tarea, pausas_reanudaciones, estado) VALUES
+(1, 1, "Leandro", "Jakimiuk", 1, "Juan", "Perez", 101, 201, 5, 4, 'Desbarbado', 'Descripcion1', '2026-06-23 08:00:00', NULL, NULL, NULL, 'activa'),
+(2, 1, "Leandro", "Jakimiuk", 1, "Carlos", "Garcia", 102, 202, 5, 4, 'Desbarbado', 'Descripcion2', '2026-06-23 08:00:00', NULL, NULL, '["2026-06-23 09:00:00"]', 'activa'),
+(3, 1, "Leandro", "Jakimiuk", 3, "Maria", "Lopez", 103, 203, 5, 4, 'Granallado', 'Descripcion3', '2026-06-23 09:00:00', NULL, NULL, '["2026-06-23 09:30:00","2026-06-23 10:00:00"]', 'activa'),
+(4, 1, "Leandro", "Jakimiuk", 4, "Ana", "Martinez", 104, 204, 5, 4, 'Granallado', 'Descripcion4', '2026-06-23 09:30:00', NULL, NULL, '["2026-06-23 10:00:00","2026-06-23 10:30:00","2026-06-23 11:00:00"]', 'pausada'),
+(5, 1, "Leandro", "Jakimiuk", 5, "Roberto", "Sanchez", 105, 205, 4, 1, 'Labor random', 'Descripcion5', '2026-06-23 10:00:00', NULL, NULL, '["2026-06-23 10:30:00","2026-06-23 11:00:00","2026-06-23 11:30:00","2026-06-23 12:00:00"]', 'activa');

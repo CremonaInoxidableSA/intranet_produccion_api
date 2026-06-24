@@ -17,10 +17,7 @@ def get_productos_total(id_sector: int):
             .filter(ProductosSectores.id_sector == id_sector)
             .all()
         )
-        result = [{
-            "id_producto": 0,
-            "nombre": "Otro"
-        }] + [
+        result = [
             {
                 "id_producto": p.id_producto,
                 "nombre": p.nombre

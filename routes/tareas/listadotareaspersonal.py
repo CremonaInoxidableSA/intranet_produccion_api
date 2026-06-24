@@ -2,8 +2,6 @@ from fastapi import APIRouter, HTTPException
 from config.db import SessionLocal
 from models.tareas import Tareas
 from models.productos import Productos
-from models.labores import Labores
-from sqlalchemy.orm import joinedload
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
@@ -15,12 +13,8 @@ def obtener_tareas_usuario(id_current_user: int):
     """
     db = SessionLocal()
     try:
-        # Obtener tareas sin fecha_fin asignadas al usuario actual con joins para obtener nombres
-        tareas = db.query(Tareas).outerjoin(
-            Productos, Tareas.id_producto == Productos.id_producto
-        ).outerjoin(
-            Labores, Tareas.id_labor == Labores.id_labor
-        ).filter(
+        # Obtener tareas sin fecha_fin asignadas al usuario actual
+        tareas = db.query(Tareas).filter(
             Tareas.id_operario_seleccionado == id_current_user,
             Tareas.fecha_fin == None
         ).all()
@@ -33,14 +27,13 @@ def obtener_tareas_usuario(id_current_user: int):
         tareas_data = []
         for tarea in tareas:
             producto = db.query(Productos).filter(Productos.id_producto == tarea.id_producto).first() if tarea.id_producto else None
-            labor = db.query(Labores).filter(Labores.id_labor == tarea.id_labor).first() if tarea.id_labor else None
             
             tareas_data.append({
                 "id_tarea": tarea.id_tarea,
                 "nombre_operario_seleccionado": tarea.nombre_operario_seleccionado,
                 "apellido_operario_seleccionado": tarea.apellido_operario_seleccionado,
                 "nombre_producto": producto.nombre if producto else None,
-                "nombre_labor": labor.nombre if labor else None
+                "nombre_labor": tarea.nombre_labor
             })
         
         return {
