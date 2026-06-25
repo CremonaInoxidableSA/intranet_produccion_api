@@ -39,7 +39,7 @@ def reiniciar_tiempo_cronometrado(id_tarea: int):
         
         return {
             "id_tarea": tarea.id_tarea,
-            "mensaje": "Tiempo cronometrado reiniciado exitosamente"
+            "detail": "Tiempo cronometrado reiniciado exitosamente"
         }
 
     except HTTPException:

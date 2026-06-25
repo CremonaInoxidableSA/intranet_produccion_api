@@ -97,7 +97,7 @@ def crear_tarea(tarea_data: CrearTareaRequest):
         
         return {
             "success": True,
-            "mensaje": "Tarea creada correctamente",
+            "detail": "Tarea creada correctamente",
             "id_tarea": nueva_tarea.id_tarea
         }
     

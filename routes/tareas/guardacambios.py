@@ -48,7 +48,7 @@ def actualizar_tiempo_extra(id_tarea: int, tiempo_extra: str):
         return {
             "success": True,
             "id_tarea": tarea.id_tarea,
-            "mensaje": "Tiempo extra actualizado correctamente"
+            "detail": "Tiempo extra actualizado correctamente"
         }
     
     except HTTPException:
@@ -92,7 +92,7 @@ def actualizar_descripcion(id_tarea: int, descripcion: str):
         
         return {
             "id_tarea": tarea.id_tarea,
-            "mensaje": "Descripción actualizada correctamente"
+            "detail": "Descripción actualizada correctamente"
         }
     
     except HTTPException:

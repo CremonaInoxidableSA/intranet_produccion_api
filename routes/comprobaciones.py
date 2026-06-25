@@ -30,7 +30,7 @@ def verificar_tarea_activa(id_operario: int):
         )
         
         if not tarea:
-            return {"mensaje": "El operario se encuentra disponible"}
+            return {"detail": "El operario se encuentra disponible"}
         
         tarea_obj, labor_obj = tarea
         pausas_reanudaciones = tarea_obj.pausas_reanudaciones
@@ -49,11 +49,11 @@ def verificar_tarea_activa(id_operario: int):
         
         if esta_pausada:
             # Si está pausada, no se considera "activa" en el sentido de que está trabajando
-            return {"mensaje": "El operario se encuentra disponible"}
+            return {"detail": "El operario se encuentra disponible"}
         
         # La tarea está activa (sin pausa)
         return {
-            "mensaje": "Existe una tarea activa para el operario seleccionado",
+            "detail": "Existe una tarea activa para el operario seleccionado",
             "nombre_labor": labor_obj.nombre,
             "nombre_usuario_logeado": tarea_obj.nombre_usuario_logeado,
             "apellido_usuario_logeado": tarea_obj.apellido_usuario_logeado,

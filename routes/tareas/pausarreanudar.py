@@ -47,7 +47,7 @@ def pausar_tarea(id_tarea: int):
         
         return {
             "estado": "pausada",
-            "mensaje": "Tarea pausada correctamente",
+            "detail": "Tarea pausada correctamente",
         }
     
     except HTTPException:
@@ -100,7 +100,7 @@ def reanudar_tarea(id_tarea: int):
         
         return {
             "estado": "activa",
-            "mensaje": "Tarea reanudada correctamente"
+            "detail": "Tarea reanudada correctamente"
         }
     
     except HTTPException:

@@ -59,8 +59,7 @@ def finalizar_tarea(id_tarea: int):
         
         return {
             "id_tarea": tarea.id_tarea,
-            "mensaje": "Tarea finalizada correctamente",
-            "estado": "finalizada"
+            "detail": "Tarea finalizada correctamente"
         }
     
     except HTTPException:

@@ -20,7 +20,7 @@ def obtener_tareas_usuario(id_current_user: int):
         
         if not tareas:
             return {
-                "mensaje": f"No hay tareas activas para el usuario"
+                "detail": f"No hay tareas activas para el usuario"
             }
         
         tareas_data = []

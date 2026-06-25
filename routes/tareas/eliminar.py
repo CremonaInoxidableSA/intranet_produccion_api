@@ -30,7 +30,7 @@ def eliminar_tarea(id_tarea: int):
         
         return {
             "estado": "eliminada",
-            "mensaje": f"Tarea {id_tarea} y sus modificaciones fueron eliminadas correctamente"
+            "detail": f"Tarea {id_tarea} y sus modificaciones fueron eliminadas correctamente"
         }
     
     except HTTPException:
