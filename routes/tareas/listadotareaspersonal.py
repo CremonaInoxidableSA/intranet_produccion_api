@@ -33,6 +33,7 @@ def obtener_tareas_usuario(id_current_user: int):
                 "nombre_operario_seleccionado": tarea.nombre_operario_seleccionado,
                 "apellido_operario_seleccionado": tarea.apellido_operario_seleccionado,
                 "nombre_producto": producto.nombre if producto else None,
+                "estado": tarea.estado,
                 "nombre_labor": tarea.nombre_labor
             })
         

@@ -41,6 +41,15 @@ def crear_tarea(tarea_data: CrearTareaRequest):
     """
     db = SessionLocal()
     try:
+        # Verificar que no exista una tarea activa para el operario seleccionado
+        tarea_activa = db.query(Tareas).filter(
+            Tareas.id_operario_seleccionado == tarea_data.id_operario_seleccionado,
+            Tareas.estado == "activa"
+        ).first()
+        
+        if tarea_activa:
+            return JSONResponse(status_code=400, content={"success": False, "detail": "Existe una tarea activa para el operario seleccionado"})
+        
         sector = db.query(Sectores).filter(Sectores.id_sector == tarea_data.id_sector).first()
         if not sector:
             return JSONResponse(status_code=400, content={"success": False, "detail": f"Sector con id {tarea_data.id_sector} no existe"})

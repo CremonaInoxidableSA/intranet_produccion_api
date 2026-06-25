@@ -7,7 +7,7 @@ router = APIRouter(prefix="/labores", tags=["labores"])
 
 @router.get("/lista-labores")
 def get_labores_total(id_sector: int, id_producto: int):
-    """Obtiene el listado de labores filtrado por `id_sector` e `id_producto`."""
+    """Obtiene el listado de labores filtrado por `id_sector` e `id_producto` y habilitado=true."""
     db = SessionLocal()
     try:
         rows = db.query(Labores).filter(
@@ -27,21 +27,21 @@ def get_labores_total(id_sector: int, id_producto: int):
     finally:
         db.close()
 
-@router.get("/lista-labores-general")
+@router.get("/lista-labores-producto")
 def get_labores_general(id_producto: int):
-    """Obtiene el listado de labores filtrado por `id_producto`"""
+    """Obtiene el listado de labores filtrado por `id_producto` y habilitado=true"""
     db = SessionLocal()
     try:
         rows = db.query(Labores, Sectores).join(
             Sectores, Labores.id_sector == Sectores.id_sector
         ).filter(
-            Labores.id_producto == id_producto
+            Labores.id_producto == id_producto,
+            Labores.habilitado == True
         ).all()
         return [
             {
                 "id_labor": l.id_labor,
                 "nombre": l.nombre,
-                "habilitado": l.habilitado,
                 "sector": s.nombre
             }
             for l, s in rows
