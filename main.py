@@ -9,8 +9,6 @@ from config import db
 from config.sql_loader import cargar_datos_iniciales
 
 from routes.sectores import router as sector_router
-from routes.productos import router as productos_router
-from routes.labores import router as labores_router
 
 from routes.comprobaciones import router as comprobaciones_router
 
@@ -22,6 +20,13 @@ from routes.tareas.reiniciartiempo import router as reiniciartiempo_router
 from routes.tareas.finalizartarea import router as finalizartarea_router
 from routes.tareas.guardacambios import router as guardacambios_router
 from routes.tareas.creartarea import router as creartarea_router
+
+from routes.productos.actualizarproductos import router as actualizarproductos_router
+from routes.productos.listaproductos import router as listaproductos_router
+from routes.productos.eliminarproductos import router as eliminarproductos_router
+from routes.productos.crearproducto import router as crearproducto_router
+
+from routes.labores.labores import router as labores_router
 
 from models.tareas import Tareas
 from models.labores import Labores
@@ -56,7 +61,10 @@ app.add_middleware(
 )
 
 app.include_router(sector_router)
-app.include_router(productos_router)
+app.include_router(actualizarproductos_router)
+app.include_router(listaproductos_router)
+app.include_router(eliminarproductos_router)
+app.include_router(crearproducto_router)
 app.include_router(labores_router)
 app.include_router(pausarreanudar_router)
 app.include_router(eliminar_router)

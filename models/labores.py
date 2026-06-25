@@ -8,3 +8,4 @@ class Labores(Base):
     id_sector = Column(Integer, ForeignKey("sectores.id_sector"), nullable=False)
     id_producto = Column(Integer, ForeignKey("productos.id_producto"), nullable=False)
     nombre = Column(String(255), nullable=False)
+    habilitado = Column(Boolean, nullable=False, default=True)

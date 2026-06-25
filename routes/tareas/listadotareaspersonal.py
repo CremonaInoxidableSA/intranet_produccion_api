@@ -15,7 +15,8 @@ def obtener_tareas_usuario(id_current_user: int):
     try:
         tareas = db.query(Tareas).filter(
             Tareas.id_usuario_logeado == id_current_user,
-            Tareas.fecha_fin == None
+            Tareas.fecha_fin == None,
+            Tareas.estado != "finalizada"
         ).all()
         
         if not tareas:

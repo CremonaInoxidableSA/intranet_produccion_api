@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from datetime import datetime
+import json
 from config.db import SessionLocal
-from sqlalchemy import text
 from models.tareas import Tareas
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
@@ -12,7 +12,6 @@ def reiniciar_tiempo_cronometrado(id_tarea: int):
     
     Actualiza:
     - fecha_inicio a la fecha actual
-    - pausas_reanudaciones a NULL (limpia pausas)
     
     Validación:
     - La tarea NO debe tener fecha_fin asignada
@@ -29,13 +28,17 @@ def reiniciar_tiempo_cronometrado(id_tarea: int):
         if tarea.fecha_fin is not None:
             raise HTTPException(status_code=400, detail="No se puede reiniciar el tiempo de una tarea finalizada")
         
-        # Actualizar fecha_inicio y dropear pausas_reanudaciones a NULL
-        db.execute(
-            text("UPDATE tareas SET fecha_inicio = :fecha_inicio, pausas_reanudaciones = NULL, estado = 'activa' WHERE id_tarea = :id_tarea"),
-            {"fecha_inicio": datetime.now(), "id_tarea": id_tarea}
-        )
+        # Capturar el tiempo una sola vez para garantizar consistencia
+        ahora = datetime.now()
+        tiempo_formateado = ahora.strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Actualizar fecha_inicio, pausas_reanudaciones y estado
+        tarea.fecha_inicio = tiempo_formateado
+        tarea.pausas_reanudaciones = [tiempo_formateado]
+        tarea.estado = "pausada"
         
         db.commit()
+        db.refresh(tarea)
         
         return {
             "id_tarea": tarea.id_tarea,

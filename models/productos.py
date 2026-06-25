@@ -6,3 +6,4 @@ class Productos(Base):
 
     id_producto = Column(Integer, primary_key=True, index=True, autoincrement=True)
     nombre = Column(String(100), nullable=False)
+    habilitado = Column(Boolean, nullable=False, default=True)
