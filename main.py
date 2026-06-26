@@ -27,6 +27,7 @@ from routes.productos.eliminarproductos import router as eliminarproductos_route
 from routes.productos.crearproducto import router as crearproducto_router
 
 from routes.labores.listalabores import router as labores_router
+from routes.labores.crearlabor import router as crearlabor_router
 from routes.labores.eliminarlabor import router as eliminarlabor_router
 
 from models.tareas import Tareas
@@ -67,6 +68,7 @@ app.include_router(listaproductos_router)
 app.include_router(eliminarproductos_router)
 app.include_router(crearproducto_router)
 app.include_router(labores_router)
+app.include_router(crearlabor_router)
 app.include_router(eliminarlabor_router)
 app.include_router(pausarreanudar_router)
 app.include_router(eliminar_router)

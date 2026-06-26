@@ -1,8 +1,11 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from config.db import SessionLocal
 from models.labores import Labores
 from models.productos_sectores import ProductosSectores
+from models.sectores import Sectores
+from models.productos import Productos
 
 class CrearLaborRequest(BaseModel):
     nombre: str
@@ -14,33 +17,36 @@ router = APIRouter(prefix="/labores", tags=["labores"])
 @router.post("/crear-labor")
 def crear_labor(data: CrearLaborRequest):
     """Crea un nuevo labor.
-    
     Parámetros:
     - nombre: string, nombre del labor
     - id_sector: integer, id del sector
     - id_producto: integer, id del producto
-    
-    Validaciones:
-    - El nombre no puede estar vacío
-    - Debe asignarse un id_sector
-    - Debe asignarse un id_producto
-    - El producto y sector deben estar relacionados en la tabla productos_sectores
     """
     db = SessionLocal()
     try:
-        # Validar que el nombre no esté vacío
         if not data.nombre or data.nombre.strip() == "":
             return JSONResponse(status_code=400, content={"success": False, "detail": "El nombre del labor no puede estar vacío"})
         
-        # Validar que id_sector sea proporcionado
-        if data.id_sector is None:
-            return JSONResponse(status_code=400, content={"success": False, "detail": "Debe asignar un sector al labor"})
+        sector = db.query(Sectores).filter(
+            Sectores.id_sector == data.id_sector
+        ).first()
+
+        if not sector:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "detail": f"El sector {data.id_sector} no existe"}
+            )
         
-        # Validar que id_producto sea proporcionado
-        if data.id_producto is None:
-            return JSONResponse(status_code=400, content={"success": False, "detail": "Debe asignar un producto al labor"})
+        producto = db.query(Productos).filter(
+            Productos.id_producto == data.id_producto
+        ).first()
+
+        if not producto:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "detail": f"El producto {data.id_producto} no existe"}
+            )
         
-        # Verificar que exista la relación válida entre producto y sector
         relacion_valida = db.query(ProductosSectores).filter(
             ProductosSectores.id_producto == data.id_producto,
             ProductosSectores.id_sector == data.id_sector
@@ -52,23 +58,34 @@ def crear_labor(data: CrearLaborRequest):
                 content={"success": False, "detail": f"El producto {data.id_producto} no está asignado al sector {data.id_sector}"}
             )
         
-        # Crear el nuevo labor con habilitado=True
+        # Verificar que no exista ya un labor con el mismo nombre, sector y producto habilitado
+        labor_existente = db.query(Labores).filter(
+            Labores.nombre == data.nombre.strip(),
+            Labores.id_sector == data.id_sector,
+            Labores.id_producto == data.id_producto,
+            Labores.habilitado == True
+        ).first()
+        
+        if labor_existente:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "detail": "Ya existe un labor para este sector y producto con el mismo nombre"}
+            )
+        
         nuevo_labor = Labores(
             nombre=data.nombre.strip(),
             id_sector=data.id_sector,
             id_producto=data.id_producto,
             habilitado=True
         )
+        
         db.add(nuevo_labor)
         db.commit()
         db.refresh(nuevo_labor)
         
         return {
             "id_labor": nuevo_labor.id_labor,
-            "nombre": nuevo_labor.nombre,
-            "id_sector": nuevo_labor.id_sector,
-            "id_producto": nuevo_labor.id_producto,
-            "habilitado": nuevo_labor.habilitado,
+            "success": True,
             "detail": "Labor creado exitosamente"
         }
     
