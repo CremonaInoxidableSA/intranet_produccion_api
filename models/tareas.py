@@ -12,7 +12,7 @@ class Tareas(Base):
     nombre_usuario_logeado = Column(String(100), nullable=False)
     apellido_usuario_logeado = Column(String(100), nullable=False)
     numero_op = Column(Integer, nullable=False)
-    numero_plano = Column(Integer, nullable=False)
+    numero_plano = Column(String(255), nullable=False)
     id_sector = Column(Integer, ForeignKey("sectores.id_sector"), nullable=False)
     id_producto = Column(Integer, ForeignKey("productos.id_producto"), nullable=False)
     nombre_labor= Column(String(255), nullable=True)

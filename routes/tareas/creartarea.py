@@ -19,7 +19,7 @@ class CrearTareaRequest(BaseModel):
     apellido_operario_seleccionado: str
     id_sector: int
     numero_op: int
-    numero_plano: int
+    numero_plano: str
     id_producto: int
     nombre_labor: str
     descripcion: str = ""
