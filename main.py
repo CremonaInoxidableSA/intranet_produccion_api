@@ -45,6 +45,8 @@ from models.productos import Productos
 from models.sectores import Sectores
 from models.productos_sectores import ProductosSectores
 
+from monitor.monitor_automatico import iniciar_monitor_pausas, detener_monitor_pausas
+
 load_dotenv()
     
 with create_engine(
@@ -95,3 +97,13 @@ app.include_router(guardacambios_router)
 app.include_router(listadotareaspersonal_router)
 app.include_router(comprobaciones_router)
 app.include_router(descargarbackups_router)
+
+
+@app.on_event("startup")
+def startup_event():
+    iniciar_monitor_pausas()
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    detener_monitor_pausas()
