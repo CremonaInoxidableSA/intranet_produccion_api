@@ -28,10 +28,10 @@ def descargar_reporte_tarea_individual(id_tarea: int):
         resultado = export_tarea_individual_to_excel(archivo_excel, id_tarea)
         
         if not resultado:
-            raise JSONResponse(status_code=404, content={"success": False, "detail": f"No se encontraron datos para la tarea ID: {id_tarea}"})
+            return JSONResponse(status_code=404, content={"success": False, "detail": f"No se encontraron datos para la tarea ID: {id_tarea}"})
         
         if not os.path.exists(archivo_excel):
-            raise JSONResponse(status_code=500, content={"success": False, "detail": f"Error al generar el archivo Excel"})
+            return JSONResponse(status_code=500, content={"success": False, "detail": f"Error al generar el archivo Excel"})
         
         return FileResponse(
             path=archivo_excel,
@@ -68,10 +68,10 @@ def descargar_reporte_tarea_fecha(fecha_inicio_filtrado: str, fecha_fin_filtrado
         resultado = export_tareas_por_fecha_to_excel(archivo_excel, fecha_inicio_filtrado, fecha_fin_filtrado)
         
         if not resultado:
-            raise JSONResponse(status_code=404, content={"success": False, "detail": f"No se encontraron datos para el rango de fechas: {fecha_inicio_filtrado} a {fecha_fin_filtrado}"})
+            return JSONResponse(status_code=404, content={"success": False, "detail": f"No se encontraron datos para el rango de fechas: {fecha_inicio_filtrado} a {fecha_fin_filtrado}"})
         
         if not os.path.exists(archivo_excel):
-            raise JSONResponse(status_code=500, content={"success": False, "detail": f"Error al generar el archivo Excel"})
+            return JSONResponse(status_code=500, content={"success": False, "detail": f"Error al generar el archivo Excel"})
         
         return FileResponse(
             path=archivo_excel,

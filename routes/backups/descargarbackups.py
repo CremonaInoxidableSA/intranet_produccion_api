@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 import os
 import tempfile
-from reportes.reportemaster import export_todas_tareas_finalizadas_to_excel
+from reportes.backupmaster import export_todas_tareas_finalizadas_to_excel
 from reportes.backupsql import export_database_sql_dump
 import logging
 
@@ -25,10 +25,10 @@ def descargar_backup_excel_master():
         resultado = export_todas_tareas_finalizadas_to_excel(archivo_excel)
         
         if not resultado:
-            raise JSONResponse(status_code=404, content={"success": False, "detail": "No se encontraron datos para el reporte master"})
+            return JSONResponse(status_code=404, content={"success": False, "detail": "No se encontraron datos para el reporte master"})
         
         if not os.path.exists(archivo_excel):
-            raise JSONResponse(status_code=500, content={"success": False, "detail": f"Error al generar el archivo Excel"})
+            return JSONResponse(status_code=500, content={"success": False, "detail": f"Error al generar el archivo Excel"})
         
         return FileResponse(
             path=archivo_excel,
@@ -61,10 +61,10 @@ def descargar_dump_sql():
         resultado = export_database_sql_dump(archivo_sql)
         
         if not resultado:
-            raise HTTPException(status_code=500, content={"success": False, "detail": "Error al generar el dump SQL"})
+            return JSONResponse(status_code=500, content={"success": False, "detail": "Error al generar el dump SQL"})
         
         if not os.path.exists(archivo_sql):
-            raise HTTPException(status_code=500, content={"success": False, "detail": "Error al generar el archivo SQL"})
+            return JSONResponse(status_code=500, content={"success": False, "detail": "Error al generar el archivo SQL"})
         
         return FileResponse(
             path=archivo_sql,
