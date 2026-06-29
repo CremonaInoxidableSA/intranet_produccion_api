@@ -20,6 +20,7 @@ from routes.tareas.datosfiltrosfinalizadas import router as datosfiltrosfinaliza
 from routes.tareas.tareasactivasgeneral import router as tareasactivasgeneral_router
 from routes.tareas.tareasfinalizadasgeneral import router as tareasfinalizadasgeneral_router
 from routes.tareas.detalletareaactiva import router as detalletareaactiva_router
+from routes.tareas.detalletareafinalizada import router as detalletareafinalizada_router
 from routes.tareas.reiniciartiempo import router as reiniciartiempo_router
 from routes.tareas.finalizartarea import router as finalizartarea_router
 from routes.tareas.guardacambios import router as guardacambios_router
@@ -41,7 +42,7 @@ from models.sectores import Sectores
 from models.productos_sectores import ProductosSectores
 
 load_dotenv()
-
+    
 with create_engine(
     f"mysql+pymysql://{os.getenv('DB_USER')}:{quote_plus(os.getenv('DB_PASSWORD', ''))}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}"
 ).connect() as connection:
@@ -78,6 +79,7 @@ app.include_router(pausarreanudar_router)
 app.include_router(eliminar_router)
 app.include_router(creartarea_router)
 app.include_router(detalletareaactiva_router)
+app.include_router(detalletareafinalizada_router)
 app.include_router(datosfiltrosencurso_router)
 app.include_router(datosfiltrosfinalizadas_router)
 app.include_router(tareasactivasgeneral_router)

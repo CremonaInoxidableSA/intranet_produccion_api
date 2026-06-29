@@ -14,7 +14,7 @@ def finalizar_tarea(id_tarea: int):
     - Asigna fecha_fin a la fecha actual
     - Calcula tiempo_cronometrado usando la función de tiempo_utils
     - Obtiene tiempo_extra de la BD (formato HH:MM:SS) y lo suma al tiempo cronometrado
-    - Guarda el resultado en duracion_tarea (formato HH:MM:SS)
+    - Guarda el resultado en tiempo_total (formato HH:MM:SS)
     - Actualiza estado a "finalizada"
     
     Args:
@@ -50,9 +50,11 @@ def finalizar_tarea(id_tarea: int):
         
         # Convertir duracion_total a formato HH:MM:SS
         duracion_formateada = formato_hhmmss(duracion_total_segundos)
+        tiempo_cronometrado_formateado = formato_hhmmss(tiempo_cronometrado_segundos)
         
         # Actualizar campos
-        tarea.duracion_tarea = duracion_formateada
+        tarea.tiempo_cronometrado = tiempo_cronometrado_formateado
+        tarea.tiempo_total = duracion_formateada
         tarea.estado = "finalizada"
         
         db.commit()

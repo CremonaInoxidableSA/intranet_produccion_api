@@ -21,5 +21,6 @@ class Tareas(Base):
     fecha_inicio = Column(DateTime, nullable=False)
     fecha_fin = Column(DateTime, nullable=True)
     tiempo_extra = Column(String(100), nullable=True)
-    duracion_tarea = Column(String(100), nullable=True)
+    tiempo_cronometrado = Column(String(100), nullable=True)
+    tiempo_total = Column(String(100), nullable=True)
     pausas_reanudaciones = Column(JSON, nullable=True)
