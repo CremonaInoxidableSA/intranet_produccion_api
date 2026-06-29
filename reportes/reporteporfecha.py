@@ -26,19 +26,15 @@ def formatear_header_multilinea(header_text, max_chars_por_linea=20, max_lineas=
     if len(header_text) <= max_chars_por_linea:
         return header_text
     
-    # Buscar espacios o caracteres de separación para dividir
     palabras = header_text.split(' ')
     if len(palabras) == 1:
-        # Si es una sola palabra muy larga, buscar otros separadores
         if '[' in header_text and ']' in header_text:
-            # Dividir antes del corchete
             parte1 = header_text[:header_text.find('[')].strip()
             parte2 = header_text[header_text.find('['):].strip()
             return f"{parte1}\n{parte2}"
         else:
-            return header_text  # No dividir si no hay separadores naturales
+            return header_text
     
-    # Dividir en líneas manteniendo palabras completas
     lineas = []
     linea_actual = ""
     
@@ -52,9 +48,7 @@ def formatear_header_multilinea(header_text, max_chars_por_linea=20, max_lineas=
             if linea_actual:
                 lineas.append(linea_actual)
                 linea_actual = palabra
-                # Si ya tenemos el máximo de líneas, agregar el resto a la última línea
                 if len(lineas) >= max_lineas - 1:
-                    # Agregar todas las palabras restantes a la línea actual
                     palabras_restantes = palabras[palabras.index(palabra):]
                     linea_actual = " ".join(palabras_restantes)
                     break
@@ -64,7 +58,6 @@ def formatear_header_multilinea(header_text, max_chars_por_linea=20, max_lineas=
     if linea_actual:
         lineas.append(linea_actual)
     
-    # Asegurar que no excedamos el máximo de líneas
     if len(lineas) > max_lineas:
         lineas = lineas[:max_lineas]
     
@@ -86,7 +79,6 @@ def calcular_tiempo_diferencia(fecha_inicio, fecha_fin):
         diferencia = fecha_fin - fecha_inicio
         segundos_totales = int(diferencia.total_seconds())
         
-        # Si la diferencia es negativa, retornar 00:00:00
         if segundos_totales < 0:
             return "00:00:00"
         
@@ -110,7 +102,6 @@ def obtener_tareas_por_fecha(fecha_inicio, fecha_fin):
     """
     session = SessionLocal()
     try:
-        # Convertir las fechas a datetime agregando hora 00:00:00 y 23:59:59
         fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d").replace(hour=0, minute=0, second=0)
         fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
         
@@ -145,7 +136,6 @@ def obtener_tareas_por_fecha(fecha_inicio, fecha_fin):
         if not rows:
             return []
         
-        # Convertir las filas a lista de diccionarios
         tareas = []
         for row in rows:
             datos = {
@@ -184,10 +174,8 @@ def export_tareas_por_fecha_to_excel(file_path, fecha_inicio, fecha_fin):
     """
     logger.info(f"Exportando datos de tareas para rango de fechas: {fecha_inicio} a {fecha_fin}")
     
-    # Obtener datos de las tareas
     tareas = obtener_tareas_por_fecha(fecha_inicio, fecha_fin)
     
-    # Si no hay datos, retornar False
     if not tareas:
         logger.info(f"No se encontraron datos para el rango de fechas: {fecha_inicio} a {fecha_fin}")
         return False
@@ -199,21 +187,18 @@ def export_tareas_por_fecha_to_excel(file_path, fecha_inicio, fecha_fin):
         
         logo_path = os.path.join(os.path.dirname(__file__), "..", "imagenes", "cremonarecort.png")
         
-        # Insertar logo
         if os.path.exists(logo_path):
             img = XLImage(logo_path)
             img.height = 31.5
             img.width = 126
             ws.add_image(img, "K3")
         
-        # Encabezado principal
         ws.merge_cells("A1:K1")
         ws["A1"] = "REPORTE DE TAREAS POR FECHA"
         ws["A1"].font = Font(size=16, bold=True, color="FFFFFF")
         ws["A1"].alignment = Alignment(horizontal="center")
         ws["A1"].fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
         
-        # Información de fechas filtradas
         ws["A3"] = "Fecha de inicio filtrado:"
         ws["A3"].font = Font(size=12, bold=True)
         ws["B3"] = fecha_inicio
@@ -224,7 +209,6 @@ def export_tareas_por_fecha_to_excel(file_path, fecha_inicio, fecha_fin):
         
         ws.append([])
         
-        # Encabezados de la tabla
         headers = [
             "Fecha de inicio de la tarea\n[YYYY-MM-DD HH:MM:SS]",
             "Fecha de finalización de la tarea\n[YYYY-MM-DD HH:MM:SS]",
@@ -239,7 +223,6 @@ def export_tareas_por_fecha_to_excel(file_path, fecha_inicio, fecha_fin):
             "Creador de la tarea"
         ]
         
-        # Agregar encabezados a la hoja
         ws.append(headers)
         first_table_first_row = ws.max_row
         
@@ -250,22 +233,16 @@ def export_tareas_por_fecha_to_excel(file_path, fecha_inicio, fecha_fin):
             cell.font = Font(bold=True, color="FFFFFF")
             cell.fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
         
-        # Ajustar altura de la fila de encabezados
         ws.row_dimensions[first_table_first_row].height = 45
         
-        # Agregar datos de todas las tareas
         for datos_tarea in tareas:
-            # Calcular tiempo bruto (fecha_fin - fecha_inicio)
             tiempo_bruto = calcular_tiempo_diferencia(datos_tarea["fecha_inicio"], datos_tarea["fecha_fin"])
             
-            # Formatear fechas
             fecha_inicio_str = datos_tarea["fecha_inicio"].strftime("%Y-%m-%d %H:%M:%S") if datos_tarea["fecha_inicio"] else ""
             fecha_fin_str = datos_tarea["fecha_fin"].strftime("%Y-%m-%d %H:%M:%S") if datos_tarea["fecha_fin"] else ""
             
-            # Tiempo neto (tiempo_total de la tarea)
             tiempo_neto = datos_tarea["tiempo_total"] or "00:00:00"
             
-            # Nombres concatenados
             operario_nombre = ""
             if datos_tarea["apellido_operario"] and datos_tarea["nombre_operario"]:
                 operario_nombre = f"{datos_tarea['apellido_operario']} {datos_tarea['nombre_operario']}"
@@ -274,7 +251,6 @@ def export_tareas_por_fecha_to_excel(file_path, fecha_inicio, fecha_fin):
             if datos_tarea["apellido_usuario"] and datos_tarea["nombre_usuario"]:
                 usuario_nombre = f"{datos_tarea['apellido_usuario']} {datos_tarea['nombre_usuario']}"
             
-            # Agregar fila de datos
             ws.append([
                 fecha_inicio_str,
                 fecha_fin_str,
@@ -289,7 +265,6 @@ def export_tareas_por_fecha_to_excel(file_path, fecha_inicio, fecha_fin):
                 usuario_nombre
             ])
         
-        # Crear tabla
         first_table_last_row = ws.max_row
         first_table = Table(displayName="ReporteTareasPorFecha", ref=f"A{first_table_first_row}:K{first_table_last_row}")
         first_style = TableStyleInfo(
@@ -299,7 +274,6 @@ def export_tareas_por_fecha_to_excel(file_path, fecha_inicio, fecha_fin):
         first_table.tableStyleInfo = first_style
         ws.add_table(first_table)
         
-        # Ajustar ancho de columnas
         ws.column_dimensions['A'].width = 25
         ws.column_dimensions['B'].width = 32
         ws.column_dimensions['C'].width = 18
