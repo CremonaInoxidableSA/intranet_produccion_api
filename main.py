@@ -18,6 +18,7 @@ from routes.tareas.listadotareaspersonal import router as listadotareaspersonal_
 from routes.tareas.datosfiltrosencurso import router as datosfiltrosencurso_router
 from routes.tareas.datosfiltrosfinalizadas import router as datosfiltrosfinalizadas_router
 from routes.tareas.tareasactivasgeneral import router as tareasactivasgeneral_router
+from routes.tareas.tareasfinalizadasgeneral import router as tareasfinalizadasgeneral_router
 from routes.tareas.detalletareaactiva import router as detalletareaactiva_router
 from routes.tareas.reiniciartiempo import router as reiniciartiempo_router
 from routes.tareas.finalizartarea import router as finalizartarea_router
@@ -80,6 +81,7 @@ app.include_router(detalletareaactiva_router)
 app.include_router(datosfiltrosencurso_router)
 app.include_router(datosfiltrosfinalizadas_router)
 app.include_router(tareasactivasgeneral_router)
+app.include_router(tareasfinalizadasgeneral_router)
 app.include_router(reiniciartiempo_router)
 app.include_router(finalizartarea_router)
 app.include_router(guardacambios_router)
