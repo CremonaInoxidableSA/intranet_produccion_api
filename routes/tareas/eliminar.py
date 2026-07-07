@@ -15,16 +15,13 @@ def eliminar_tarea(id_tarea: int):
     """
     db = SessionLocal()
     try:
-        # Buscar la tarea
         tarea = db.query(Tareas).filter(Tareas.id_tarea == id_tarea).first()
         
         if not tarea:
             raise HTTPException(status_code=404, detail=f"Tarea con ID {id_tarea} no encontrada")
         
-        # Eliminar todos los registros de modificaciones asociados a esta tarea
         db.query(Modificaciones).filter(Modificaciones.id_tarea == id_tarea).delete()
         
-        # Eliminar la tarea
         db.delete(tarea)
         db.commit()
         
