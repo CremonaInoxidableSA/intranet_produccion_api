@@ -35,19 +35,15 @@ def obtener_tareas_finalizadas_general(filtros: FiltrosTareasFinalizadas):
             Tareas.estado == "finalizada"
         )
         
-        # Filtro por números de OP
         if filtros.numeros_op and 0 not in filtros.numeros_op:
             query = query.filter(Tareas.numero_op.in_(filtros.numeros_op))
         
-        # Filtro por números de plano
         if filtros.numeros_plano and "0" not in filtros.numeros_plano:
             query = query.filter(Tareas.numero_plano.in_(filtros.numeros_plano))
         
-        # Filtro por operarios (apellido + nombre)
         if filtros.operarios and "0" not in filtros.operarios:
             operarios_filtro = []
             for operario in filtros.operarios:
-                # Esperamos formato "apellido nombre"
                 partes = operario.split(" ", 1)
                 if len(partes) == 2:
                     apellido, nombre = partes
@@ -60,7 +56,6 @@ def obtener_tareas_finalizadas_general(filtros: FiltrosTareasFinalizadas):
             if operarios_filtro:
                 query = query.filter(or_(*operarios_filtro))
         
-        # Filtro por sectores
         if filtros.sectores and "0" not in filtros.sectores:
             sectores_ids = db.query(Sectores.id_sector).filter(
                 Sectores.nombre.in_(filtros.sectores)
@@ -69,7 +64,6 @@ def obtener_tareas_finalizadas_general(filtros: FiltrosTareasFinalizadas):
             if sectores_ids_list:
                 query = query.filter(Tareas.id_sector.in_(sectores_ids_list))
         
-        # Filtro por fecha de inicio (00:00:00 del día indicado)
         if filtros.fecha_inicio and filtros.fecha_inicio != "0":
             try:
                 fecha_inicio = datetime.strptime(filtros.fecha_inicio, "%Y-%m-%d")
@@ -77,11 +71,9 @@ def obtener_tareas_finalizadas_general(filtros: FiltrosTareasFinalizadas):
             except ValueError:
                 raise HTTPException(status_code=400, detail="Formato de fecha_inicio inválido. Use YYYY-MM-DD")
         
-        # Filtro por fecha de fin (23:59:59 del día indicado)
         if filtros.fecha_fin and filtros.fecha_fin != "0":
             try:
                 fecha_fin = datetime.strptime(filtros.fecha_fin, "%Y-%m-%d")
-                # Sumamos 1 día y restamos 1 segundo para obtener 23:59:59
                 fecha_fin_hora = datetime(fecha_fin.year, fecha_fin.month, fecha_fin.day, 23, 59, 59)
                 query = query.filter(Tareas.fecha_fin <= fecha_fin_hora)
             except ValueError:

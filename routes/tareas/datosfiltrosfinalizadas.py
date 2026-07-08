@@ -28,12 +28,12 @@ def obtener_numeros_op_finalizadas(
         
         if fecha_inicio:
             fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d")
-            query = query.filter(Tareas.fecha_inicio >= fecha_inicio_dt)
+            query = query.filter(Tareas.fecha_fin >= fecha_inicio_dt)
         
         if fecha_fin:
             fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d")
             fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
-            query = query.filter(Tareas.fecha_inicio <= fecha_fin_dt)
+            query = query.filter(Tareas.fecha_fin <= fecha_fin_dt)
         
         numeros_op = query.distinct().all()
         
@@ -72,12 +72,12 @@ def obtener_numeros_plano_finalizadas(
         
         if fecha_inicio:
             fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d")
-            query = query.filter(Tareas.fecha_inicio >= fecha_inicio_dt)
+            query = query.filter(Tareas.fecha_fin >= fecha_inicio_dt)
         
         if fecha_fin:
             fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d")
             fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
-            query = query.filter(Tareas.fecha_inicio <= fecha_fin_dt)
+            query = query.filter(Tareas.fecha_fin <= fecha_fin_dt)
         
         numeros_plano = query.distinct().all()
         
@@ -116,12 +116,12 @@ def obtener_listado_operarios_finalizadas(
         
         if fecha_inicio:
             fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d")
-            query = query.filter(Tareas.fecha_inicio >= fecha_inicio_dt)
+            query = query.filter(Tareas.fecha_fin >= fecha_inicio_dt)
         
         if fecha_fin:
             fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d")
             fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
-            query = query.filter(Tareas.fecha_inicio <= fecha_fin_dt)
+            query = query.filter(Tareas.fecha_fin <= fecha_fin_dt)
         
         encargados = query.distinct().all()
         
@@ -159,12 +159,12 @@ def obtener_sectores_finalizadas(
         
         if fecha_inicio:
             fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d")
-            query = query.filter(Tareas.fecha_inicio >= fecha_inicio_dt)
+            query = query.filter(Tareas.fecha_fin >= fecha_inicio_dt)
         
         if fecha_fin:
             fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d")
             fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
-            query = query.filter(Tareas.fecha_inicio <= fecha_fin_dt)
+            query = query.filter(Tareas.fecha_fin <= fecha_fin_dt)
         
         sectores = query.distinct().all()
         

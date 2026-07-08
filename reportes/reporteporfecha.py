@@ -127,8 +127,8 @@ def obtener_tareas_por_fecha(fecha_inicio, fecha_fin):
             FROM tareas t
             LEFT JOIN sectores sec ON t.id_sector = sec.id_sector
             LEFT JOIN productos prod ON t.id_producto = prod.id_producto
-            WHERE t.fecha_inicio >= :fecha_inicio AND t.fecha_fin <= :fecha_fin
-            ORDER BY t.fecha_inicio
+            WHERE t.fecha_fin >= :fecha_inicio AND t.fecha_fin <= :fecha_fin
+            ORDER BY t.fecha_fin
         """)
         result = session.execute(query, {"fecha_inicio": fecha_inicio_dt, "fecha_fin": fecha_fin_dt})
         rows = result.fetchall()

@@ -25,6 +25,9 @@ def crear_producto(data: CrearProductoRequest):
         if not data.nombre or data.nombre.strip() == "":
             raise HTTPException(status_code=400, detail="El nombre del producto no puede estar vacío")
         
+        if data.nombre and data.nombre.strip() == "Otro":
+            raise HTTPException(status_code=400, detail="El nombre del producto no puede ser 'Otro'")
+
         if not data.id_sectores or len(data.id_sectores) == 0:
             raise HTTPException(status_code=400, detail="Debe asignar al menos un sector al producto")
         

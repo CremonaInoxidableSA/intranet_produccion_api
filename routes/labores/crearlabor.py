@@ -46,6 +46,12 @@ def crear_labor(data: CrearLaborRequest):
                 status_code=400,
                 content={"success": False, "detail": f"El producto {data.id_producto} no existe"}
             )
+
+        if  data.id_producto == 1:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "detail": f"El producto 'Otro' no puede tener labores asignadas."}
+            )
         
         relacion_valida = db.query(ProductosSectores).filter(
             ProductosSectores.id_producto == data.id_producto,
