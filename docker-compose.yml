@@ -28,7 +28,7 @@ services:
     container_name: intranet_produccion_api
     restart: unless-stopped
     expose:
-      - "8200"
+      - "8002"
     env_file:
       - .env
     volumes:
@@ -40,29 +40,6 @@ services:
         condition: service_healthy
     environment:
       DB_HOST: db
-
-  nginx:
-    image: nginx:alpine
-    container_name: nginx-proxy-api-produccion
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    networks:
-      - intranet_produccion_network
-    depends_on:
-      - api
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot-api-produccion
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
 
 volumes:
   mysql_data:
