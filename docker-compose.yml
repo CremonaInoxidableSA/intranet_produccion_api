@@ -1,28 +1,4 @@
-version: "3.9"
-
 services:
-  db:
-    image: mysql:8.0
-    container_name: mysql-db-api-prod
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./sql:/docker-entrypoint-initdb.d
-    networks:
-      - intranet_produccion_network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   api:
     build: .
     container_name: intranet_produccion_api
@@ -34,16 +10,10 @@ services:
     volumes:
       - /home/ec2-user/.aws:/root/.aws:ro
     networks:
-      - intranet_produccion_network
-    depends_on:
-      db:
-        condition: service_healthy
+      - intranet_gestion_auth_network
     environment:
-      DB_HOST: db
-
-volumes:
-  mysql_data:
+      DB_HOST: mysql-db-api-auth
 
 networks:
-  intranet_produccion_network:
+  intranet_gestion_auth_network:
     external: true
