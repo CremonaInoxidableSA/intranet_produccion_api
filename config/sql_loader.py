@@ -51,11 +51,9 @@ def cargar_datos_iniciales() -> None:
         return
 
     archivos = [
-        os.path.join(SQL_DIR, "insert_productos.sql"),
         os.path.join(SQL_DIR, "insert_sectores.sql"),
-        os.path.join(SQL_DIR, "insert_labores.sql"),
+        os.path.join(SQL_DIR, "insert_productos.sql"),
         os.path.join(SQL_DIR, "insert_productos_sectores.sql"),
-        os.path.join(SQL_DIR, "insert_tareas_temp.sql"),
     ]
 
     for ruta in archivos:
