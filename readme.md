@@ -4,7 +4,7 @@ python -m venv venv
 venv\Scripts\activate
 pip install --upgrade -r requirements.txt
 
-uvicorn main:app --host 0.0.0.0 --port 8200
+uvicorn main:app --host 0.0.0.0 --port 8002
 
 # BLOQUEO POR MYSQL
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
