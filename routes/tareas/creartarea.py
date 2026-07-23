@@ -74,7 +74,7 @@ def crear_tarea(tarea_data: CrearTareaRequest):
             minutos = int(partes[1])
             segundos = int(partes[2])
             
-            if not (0 <= horas <= 23 and 0 <= minutos <= 59 and 0 <= segundos <= 59):
+            if not (0 <= horas <= 9999 and 0 <= minutos <= 59 and 0 <= segundos <= 59):
                 raise ValueError("Valores fuera de rango")
         except ValueError:
             return JSONResponse(status_code=400, content={"success": False, "detail": "Formato tiempo_extra inválido. Valores no numéricos o fuera de rango"})
