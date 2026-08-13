@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from security.permissions import require_role
 from datetime import datetime
 from config.db import SessionLocal
 from models.tareas import Tareas
@@ -10,10 +11,12 @@ from utils.tiempo_utils import calcular_tiempo_cronometrado, formato_hhmmss
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
-@router.get("/detalle-tarea-finalizada-general")
+@router.get(
+    "/detalle-tarea-finalizada-general",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
 def obtener_detalle_tarea_finalizada_general(id_tarea: int):
-    """Obtiene todos los detalles de una tarea específica. Esta consulta es utilizada
-    en el sector denominado "DETALLE TAREA FINALIZADA" del sector "MONITOREO".
+    """Obtiene todos los detalles de una tarea específica.
     """
     db = SessionLocal()
     try:
@@ -25,7 +28,6 @@ def obtener_detalle_tarea_finalizada_general(id_tarea: int):
         if tarea.fecha_fin is None or tarea.estado != "finalizada":
             raise HTTPException(status_code=400, detail=f"Tarea con id {id_tarea} no se encuentra finalizada")
         
-        # Obtener datos relacionados
         producto = db.query(Productos).filter(Productos.id_producto == tarea.id_producto).first() if tarea.id_producto else None
         sector = db.query(Sectores).filter(Sectores.id_sector == tarea.id_sector).first() if tarea.id_sector else None
         

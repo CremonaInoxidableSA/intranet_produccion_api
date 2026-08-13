@@ -7,3 +7,10 @@ pandas
 openpyxl
 pillow
 mysqldump
+python-jose[cryptography]
+uvicorn[standard]
+httpx
+pydantic-settings
+pydantic[email]
+mysql-connector-python
+pydantic

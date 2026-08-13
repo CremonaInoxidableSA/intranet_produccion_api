@@ -1,11 +1,19 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from config.db import SessionLocal
 from models.sectores import Sectores
 
-router = APIRouter(prefix="/sectores", tags=["sectores"])
+from security.permissions import require_role
 
-@router.get("/lista-sectores")
+router = APIRouter(
+    prefix="/sectores", 
+    tags=["sectores"]
+)
+
+@router.get(
+    "/lista-sectores",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_SECTORES_PRODUCCION"))]
+)
 def get_sectores_total():
     """Obtiene el listado de todos los sectores, sin importar si están habilitados o no."""
     db = SessionLocal()

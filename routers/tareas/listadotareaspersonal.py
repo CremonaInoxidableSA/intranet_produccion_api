@@ -1,15 +1,17 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from security.permissions import require_role
 from config.db import SessionLocal
 from models.tareas import Tareas
 from models.productos import Productos
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
-@router.get("/listado-tareas-personal")
+@router.get(
+    "/listado-tareas-personal",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_PRODUCCION"))]
+)
 def obtener_tareas_usuario(id_current_user: int):
-    """Obtiene las tareas activas (sin fecha_fin) del usuario actual.
-    
-    Retorna todas las tareas asignadas al usuario que aún no han sido finalizadas.
+    """Obtiene las tareas activas (sin fecha_fin) del usuario actual.    
     """
     db = SessionLocal()
     try:

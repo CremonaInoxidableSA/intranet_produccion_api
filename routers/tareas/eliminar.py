@@ -1,17 +1,17 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from security.permissions import require_role
 from config.db import SessionLocal
 from models.tareas import Tareas
 from models.modificaciones import Modificaciones
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
-@router.delete("/eliminar-tarea")
+@router.delete(
+    "/eliminar-tarea",
+    dependencies=[Depends(require_role("PERMISO_ELIMINAR_TAREAS_PRODUCCION"))]
+)
 def eliminar_tarea(id_tarea: int):
     """Elimina una tarea y todos los registros de modificaciones asociados.
-    
-    Este endpoint elimina:
-    1. Todos los registros en la tabla 'modificaciones' que referencian el id_tarea
-    2. El registro de la tarea en la tabla 'tareas'
     """
     db = SessionLocal()
     try:

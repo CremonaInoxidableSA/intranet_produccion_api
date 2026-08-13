@@ -1,10 +1,12 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from config.db import SessionLocal
 from models.tareas import Tareas
 from models.sectores import Sectores
 from models.productos import Productos
 from sqlalchemy import and_, or_
+
+from security.permissions import require_role
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
@@ -14,15 +16,12 @@ class FiltrosTareasActivas(BaseModel):
     operarios: list[str]
     sectores: list[str]
 
-@router.post("/tareas-activas-general")
+@router.post(
+    "/tareas-activas-general",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
 def obtener_tareas_activas_general(filtros: FiltrosTareasActivas):
     """Retorna un listado de tareas con estado activa o pausada según los filtros proporcionados.
-    
-    Filtros:
-    - numeros_op: Array de int. Si contiene 0, selecciona TODOS los números de OP
-    - numeros_plano: Array de string. Si contiene "0", selecciona TODOS los números de plano
-    - operarios: Array de string (formato "apellido nombre"). Si contiene "0", selecciona TODOS los operarios
-    - sectores: Array de string. Si contiene "0", selecciona TODOS los sectores
     """
     db = SessionLocal()
     try:

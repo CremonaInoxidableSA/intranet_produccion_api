@@ -1,11 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from security.permissions import require_role
 from config.db import SessionLocal
 from models.tareas import Tareas
 from models.sectores import Sectores
 
 router = APIRouter(prefix="/filtros", tags=["filtros"])
 
-@router.get("/numeros-op-curso")
+@router.get(
+    "/numeros-op-curso",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
 def obtener_numeros_op_curso():
     """Retorna los números de OP existentes con al menos una tarea en estado activa o pausada.
     
@@ -31,7 +35,10 @@ def obtener_numeros_op_curso():
     finally:
         db.close()
 
-@router.get("/numeros-plano-curso")
+@router.get(
+    "/numeros-plano-curso",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
 def obtener_numeros_plano_curso():
     """Retorna los números de plano existentes con al menos una tarea en estado activa o pausada.
     
@@ -54,7 +61,10 @@ def obtener_numeros_plano_curso():
     finally:
         db.close()
 
-@router.get("/listado-operarios-curso")
+@router.get(
+    "/listado-operarios-curso",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
 def obtener_listado_operarios_curso():
     """Retorna los nombres concatenados (apellido + nombre) de los operarios con al menos una tarea en estado activa o pausada.
     
@@ -80,7 +90,10 @@ def obtener_listado_operarios_curso():
     finally:
         db.close()
 
-@router.get("/sectores-curso")
+@router.get(
+    "/sectores-curso",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+    )
 def obtener_sectores_curso():
     """Retorna los nombres de los sectores existentes con al menos una tarea en estado activa o pausada.
     

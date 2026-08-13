@@ -1,15 +1,20 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from config.db import SessionLocal
 from models.labores import Labores
+
+from security.permissions import require_role
 
 class EliminarLabor(BaseModel):
     id_labor: int
 
 router = APIRouter(prefix="/labores", tags=["labores"])
 
-@router.post("/eliminar-labor")
+@router.post(
+    "/eliminar-labor",
+    dependencies=[Depends(require_role("PERMISO_ELIMINAR_LABORES_PRODUCCION"))]
+)
 def eliminar_labor(data: EliminarLabor):
     """Elimina una labor si existe."""
     db = SessionLocal()

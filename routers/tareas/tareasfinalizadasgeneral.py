@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from fastapi import Depends
 from pydantic import BaseModel
 from config.db import SessionLocal
 from models.tareas import Tareas
@@ -7,6 +8,8 @@ from models.productos import Productos
 from sqlalchemy import and_, or_
 from datetime import datetime
 
+from security.permissions import require_role
+
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
 class FiltrosTareasFinalizadas(BaseModel):
@@ -14,20 +17,16 @@ class FiltrosTareasFinalizadas(BaseModel):
     numeros_plano: list[str]
     operarios: list[str]
     sectores: list[str]
-    fecha_inicio: str | None = None  # Formato YYYY-MM-DD
-    fecha_fin: str | None = None      # Formato YYYY-MM-DD
+    fecha_inicio: str | None = None
+    fecha_fin: str | None = None
 
-@router.post("/tareas-finalizadas-general")
+@router.post(
+    "/tareas-finalizadas-general",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
+
 def obtener_tareas_finalizadas_general(filtros: FiltrosTareasFinalizadas):
     """Retorna un listado de tareas con estado finalizada según los filtros proporcionados.
-    
-    Filtros:
-    - numeros_op: Array de int. Si contiene 0, selecciona TODOS los números de OP
-    - numeros_plano: Array de string. Si contiene "0", selecciona TODOS los números de plano
-    - operarios: Array de string (formato "apellido nombre"). Si contiene "0", selecciona TODOS los operarios
-    - sectores: Array de string. Si contiene "0", selecciona TODOS los sectores
-    - fecha_inicio: Fecha de inicio (YYYY-MM-DD). Busca tareas con fecha_fin >= 00:00:00 del día indicado
-    - fecha_fin: Fecha de fin (YYYY-MM-DD). Busca tareas con fecha_fin <= 23:59:59 del día indicado
     """
     db = SessionLocal()
     try:

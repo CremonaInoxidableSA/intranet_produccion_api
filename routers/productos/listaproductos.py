@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from config.db import SessionLocal
 from models.productos import Productos
 from models.productos_sectores import ProductosSectores
 from models.sectores import Sectores
+
+from security.permissions import require_role
 
 class ActualizarProducto(BaseModel):
     id_producto: int
@@ -11,7 +13,10 @@ class ActualizarProducto(BaseModel):
 
 router = APIRouter(prefix="/productos", tags=["productos"])
 
-@router.get("/lista-productos-sector")
+@router.get(
+    "/lista-productos-sector",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_PRODUCTOS_PRODUCCION"))]
+)
 def get_productos_sector(id_sector: int):
     """Obtiene el listado de productos filtrado por `id_sector`. Requiere `id_sector` entero."""
     db = SessionLocal()
@@ -35,7 +40,10 @@ def get_productos_sector(id_sector: int):
     finally:
         db.close()
 
-@router.get("/lista-productos-general")
+@router.get(
+    "/lista-productos-general",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_PRODUCTOS_PRODUCCION"))]
+)
 def get_productos_total():
     """Obtiene el listado de productos sin filtros agregados, con sus sectores asociados"""
     db = SessionLocal()

@@ -1,23 +1,21 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from config.db import SessionLocal
 from models.tareas import Tareas
 from datetime import datetime
 
+from security.permissions import require_role
+
 router = APIRouter(prefix="/comprobaciones", tags=["comprobaciones"])
 
-@router.get("/tarea-activa-operario")
+@router.get(
+    "/tarea-activa-operario",
+    dependencies=[Depends(require_role("PERMISO_CREAR_TAREAS_PRODUCCION"))]
+)
 def verificar_tarea_activa(id_operario: int):
     """Verifica si existe una tarea activa para el operario especificado (por ID).
-    
-    Una tarea se considera activa si:
-    - No tiene fecha_fin (fecha_fin IS NULL)
-    - El estado es diferente a 'pausada'
-    
-    Si existe tarea activa retorna los datos, si no retorna disponibilidad.
     """
     db = SessionLocal()
     try:
-        # Buscar tarea activa para el operario (sin fecha_fin y no pausada)
         tarea = (
             db.query(Tareas)
             .filter(
@@ -31,7 +29,6 @@ def verificar_tarea_activa(id_operario: int):
         if not tarea:
             return {"success": True}
         
-        # La tarea está activa (sin pausa)
         return {
             "detail": "Existe una tarea activa para el operario seleccionado",
             "success": False,

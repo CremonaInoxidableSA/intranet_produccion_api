@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from security.permissions import require_role
 from config.db import SessionLocal
 from models.tareas import Tareas
 from datetime import datetime
@@ -6,12 +7,12 @@ from sqlalchemy.orm.attributes import flag_modified
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
-@router.post("/pausar-tarea")
+@router.post(
+    "/pausar-tarea",
+    dependencies=[Depends(require_role("PERMISO_EDITAR_TAREAS_PRODUCCION"))]
+)
 def pausar_tarea(id_tarea: int):
     """Pausa una tarea agregando el timestamp actual al array pausas_reanudaciones.
-    
-    La tarea debe estar ACTIVA (número PAR de pausas_reanudaciones o NULL/0).
-    No se puede pausar una tarea finalizada o ya pausada.
     """
     db = SessionLocal()
     try:
@@ -26,7 +27,6 @@ def pausar_tarea(id_tarea: int):
         # Verificar si la tarea está activa (número PAR de elementos = ACTIVA)
         pausas_reanudaciones = tarea.pausas_reanudaciones
         if pausas_reanudaciones is None or len(pausas_reanudaciones) == 0:
-            # Tarea activa, puede pausarse
             esta_activa = True
         else:
             # Número impar de elementos = tarea pausada, número par = tarea activa
@@ -35,7 +35,6 @@ def pausar_tarea(id_tarea: int):
         if not esta_activa:
             raise HTTPException(status_code=400, detail="La tarea ya está pausada, no se puede pausar nuevamente")
         
-        # Inicializar o agregar al array pausas_reanudaciones
         pausas = tarea.pausas_reanudaciones if tarea.pausas_reanudaciones else []
         pausas.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         tarea.pausas_reanudaciones = pausas
@@ -60,12 +59,12 @@ def pausar_tarea(id_tarea: int):
         db.close()
 
 
-@router.post("/reanudar-tarea")
+@router.post(
+    "/reanudar-tarea",
+    dependencies=[Depends(require_role("PERMISO_EDITAR_TAREAS_PRODUCCION"))]
+)
 def reanudar_tarea(id_tarea: int):
     """Reanuda una tarea agregando el timestamp actual al array pausas_reanudaciones.
-    
-    La tarea debe estar PAUSADA (número IMPAR de pausas_reanudaciones).
-    No se puede reanudar una tarea finalizada o que ya está en ejecución.
     """
     db = SessionLocal()
     try:
@@ -88,7 +87,6 @@ def reanudar_tarea(id_tarea: int):
         if not esta_pausada:
             raise HTTPException(status_code=400, detail="La tarea ya está en ejecución")
         
-        # Agregar el timestamp actual
         pausas = tarea.pausas_reanudaciones
         pausas.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         tarea.pausas_reanudaciones = pausas

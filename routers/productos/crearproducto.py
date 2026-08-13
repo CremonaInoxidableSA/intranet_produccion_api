@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List
 from config.db import SessionLocal
@@ -6,13 +6,18 @@ from models.productos import Productos
 from models.productos_sectores import ProductosSectores
 from models.sectores import Sectores
 
+from security.permissions import require_role
+
 class CrearProductoRequest(BaseModel):
     nombre: str
     id_sectores: List[int]
 
 router = APIRouter(prefix="/productos", tags=["productos"])
 
-@router.post("/crear-producto")
+@router.post(
+    "/crear-producto",
+    dependencies=[Depends(require_role("PERMISO_CREAR_PRODUCTOS_PRODUCCION"))]
+)
 def crear_producto(data: CrearProductoRequest):
     """Crea un nuevo producto y lo asigna a los sectores especificados.
     

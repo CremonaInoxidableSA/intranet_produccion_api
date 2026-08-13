@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import FileResponse, JSONResponse
 import os
 import tempfile
@@ -6,11 +6,16 @@ from reportes.backupmaster import export_todas_tareas_finalizadas_to_excel
 from reportes.backupsql import export_database_sql_dump
 import logging
 
+from security.permissions import require_role
+
 logger = logging.getLogger("uvicorn")
 
 router = APIRouter(prefix="/backups", tags=["backups"])
 
-@router.get("/descargar-excel-master")
+@router.get(
+    "/descargar-excel-master",
+    dependencies=[Depends(require_role("PERMISO_DESCARGAR_BACKUPS"))]
+)
 def descargar_backup_excel_master():
     """
     Descarga el reporte Excel de todas las tareas finalizadas.
@@ -46,7 +51,10 @@ def descargar_backup_excel_master():
             detail=f"Error interno del servidor: {str(e)}"
         )
 
-@router.get("/descargar-dump-sql")
+@router.get(
+    "/descargar-dump-sql",
+    dependencies=[Depends(require_role("PERMISO_DESCARGAR_BACKUPS"))]
+)
 def descargar_dump_sql():
     """
     Descarga el dump SQL completo de la base de datos.

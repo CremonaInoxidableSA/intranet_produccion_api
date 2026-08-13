@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from security.permissions import require_role
 from fastapi.responses import FileResponse, JSONResponse
 import os
 import tempfile
@@ -10,16 +11,13 @@ logger = logging.getLogger("uvicorn")
 
 router = APIRouter(prefix="/reportes", tags=["reportes"])
 
-@router.get("/descargar-reporte-tarea")
+@router.get(
+    "/descargar-reporte-tarea",
+    dependencies=[Depends(require_role("PERMISO_DESCARGAR_REPORTES_PRODUCCION"))]
+)
 def descargar_reporte_tarea_individual(id_tarea: int):
     """
     Descarga el reporte Excel de una tarea individual específica.
-    
-    Args:
-        id_tarea: ID de la tarea a reportar
-    
-    Returns:
-        Archivo Excel con el reporte de la tarea
     """
     try:
         temp_dir = tempfile.gettempdir()
@@ -49,17 +47,13 @@ def descargar_reporte_tarea_individual(id_tarea: int):
             detail=f"Error interno del servidor: {str(e)}"
         )
 
-@router.get("/descargar-reporte-fecha")
+@router.get(
+    "/descargar-reporte-fecha",
+    dependencies=[Depends(require_role("PERMISO_DESCARGAR_REPORTES_PRODUCCION"))]
+)
 def descargar_reporte_tarea_fecha(fecha_inicio_filtrado: str, fecha_fin_filtrado: str):
     """
     Descarga el reporte Excel de todas las tareas en un rango de fechas.
-    
-    Args:
-        fecha_inicio_filtrado: Fecha de inicio en formato YYYY-MM-DD
-        fecha_fin_filtrado: Fecha de fin en formato YYYY-MM-DD
-    
-    Returns:
-        Archivo Excel con el reporte de tareas
     """
     try:
         temp_dir = tempfile.gettempdir()

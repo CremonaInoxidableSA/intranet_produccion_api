@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
+from security.permissions import require_role
 from config.db import SessionLocal
 from models.tareas import Tareas
 from models.sectores import Sectores
@@ -7,18 +8,15 @@ from typing import Optional
 
 router = APIRouter(prefix="/filtros", tags=["filtros"])
 
-@router.get("/numeros-op-finalizadas")
+@router.get(
+    "/numeros-op-finalizadas",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
 def obtener_numeros_op_finalizadas(
     fecha_inicio: Optional[str] = Query(None),
     fecha_fin: Optional[str] = Query(None)
 ):
     """Retorna los números de OP existentes con al menos una tarea en estado finalizada.
-    
-    Parámetros:
-        fecha_inicio: Fecha de inicio (formato: YYYY-MM-DD)
-        fecha_fin: Fecha de fin (formato: YYYY-MM-DD)
-    
-    Retorna un array de enteros con los números de OP únicos.
     """
     db = SessionLocal()
     try:
@@ -51,18 +49,15 @@ def obtener_numeros_op_finalizadas(
     finally:
         db.close()
 
-@router.get("/numeros-plano-finalizadas")
+@router.get(
+    "/numeros-plano-finalizadas",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
 def obtener_numeros_plano_finalizadas(
     fecha_inicio: Optional[str] = Query(None),
     fecha_fin: Optional[str] = Query(None)
 ):
     """Retorna los números de plano existentes con al menos una tarea en estado finalizada.
-    
-    Parámetros:
-        fecha_inicio: Fecha de inicio (formato: YYYY-MM-DD)
-        fecha_fin: Fecha de fin (formato: YYYY-MM-DD)
-    
-    Retorna un array de strings con los números de plano únicos.
     """
     db = SessionLocal()
     try:
@@ -92,18 +87,15 @@ def obtener_numeros_plano_finalizadas(
     finally:
         db.close()
 
-@router.get("/listado-operarios-finalizadas")
+@router.get(
+    "/listado-operarios-finalizadas",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
 def obtener_listado_operarios_finalizadas(
     fecha_inicio: Optional[str] = Query(None),
     fecha_fin: Optional[str] = Query(None)
 ):
     """Retorna los nombres concatenados (apellido + nombre) de los operarios con al menos una tarea en estado finalizada.
-    
-    Parámetros:
-        fecha_inicio: Fecha de inicio (formato: YYYY-MM-DD)
-        fecha_fin: Fecha de fin (formato: YYYY-MM-DD)
-    
-    Retorna un array de strings con formato "apellido+nombre" únicos.
     """
     db = SessionLocal()
     try:
@@ -136,18 +128,15 @@ def obtener_listado_operarios_finalizadas(
     finally:
         db.close()
 
-@router.get("/sectores-finalizadas")
+@router.get(
+    "/sectores-finalizadas",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_MONITOREO_PRODUCCION"))]
+)
 def obtener_sectores_finalizadas(
     fecha_inicio: Optional[str] = Query(None),
     fecha_fin: Optional[str] = Query(None)
 ):
     """Retorna los nombres de los sectores existentes con al menos una tarea en estado finalizada.
-    
-    Parámetros:
-        fecha_inicio: Fecha de inicio (formato: YYYY-MM-DD)
-        fecha_fin: Fecha de fin (formato: YYYY-MM-DD)
-    
-    Retorna un array de strings con los nombres de sectores únicos.
     """
     db = SessionLocal()
     try:

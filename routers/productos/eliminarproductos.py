@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from security.permissions import require_role
 from pydantic import BaseModel
 from config.db import SessionLocal
 from models.productos import Productos
@@ -8,7 +9,10 @@ class EliminarProducto(BaseModel):
 
 router = APIRouter(prefix="/productos", tags=["productos"])
 
-@router.post("/eliminar-producto")
+@router.post(
+    "/eliminar-producto",
+    dependencies=[Depends(require_role("PERMISO_EDITAR_PRODUCTOS_PRODUCCION"))]
+) 
 def eliminar_producto(data: EliminarProducto):
     """Elimina un producto si existe."""
     db = SessionLocal()

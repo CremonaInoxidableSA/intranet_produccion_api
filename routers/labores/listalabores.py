@@ -1,11 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from security.permissions import require_role
 from config.db import SessionLocal
 from models.labores import Labores
 from models.sectores import Sectores
 
 router = APIRouter(prefix="/labores", tags=["labores"])
 
-@router.get("/lista-labores")
+@router.get(
+    "/lista-labores",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_LABORES_PRODUCCION"))]
+)
 def get_labores_total(id_sector: int, id_producto: int):
     """Obtiene el listado de labores filtrado por `id_sector` e `id_producto` y habilitado=true."""
     db = SessionLocal()
@@ -27,7 +31,10 @@ def get_labores_total(id_sector: int, id_producto: int):
     finally:
         db.close()
 
-@router.get("/lista-labores-producto")
+@router.get(
+    "/lista-labores-producto",
+    dependencies=[Depends(require_role("PERMISO_CONSULTAR_LABORES_PRODUCCION"))]
+)
 def get_labores_general(id_producto: int):
     """Obtiene el listado de labores filtrado por `id_producto` y habilitado=true"""
     db = SessionLocal()

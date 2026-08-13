@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from config.db import SessionLocal
@@ -7,6 +7,8 @@ from models.productos_sectores import ProductosSectores
 from models.sectores import Sectores
 from models.productos import Productos
 
+from security.permissions import require_role
+
 class CrearLaborRequest(BaseModel):
     nombre: str
     id_sector: int
@@ -14,7 +16,10 @@ class CrearLaborRequest(BaseModel):
 
 router = APIRouter(prefix="/labores", tags=["labores"])
 
-@router.post("/crear-labor")
+@router.post(
+    "/crear-labor",
+    dependencies=[Depends(require_role("PERMISO_CREAR_LABORES_PRODUCCION"))]
+)
 def crear_labor(data: CrearLaborRequest):
     """Crea un nuevo labor.
     Parámetros:
@@ -64,7 +69,6 @@ def crear_labor(data: CrearLaborRequest):
                 content={"success": False, "detail": f"El producto {data.id_producto} no está asignado al sector {data.id_sector}"}
             )
         
-        # Verificar que no exista ya un labor con el mismo nombre, sector y producto habilitado
         labor_existente = db.query(Labores).filter(
             Labores.nombre == data.nombre.strip(),
             Labores.id_sector == data.id_sector,

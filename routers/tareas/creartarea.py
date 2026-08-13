@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from datetime import datetime
@@ -7,6 +7,8 @@ from models.tareas import Tareas
 from models.sectores import Sectores
 from models.productos import Productos
 from models.productos_sectores import ProductosSectores
+
+from security.permissions import require_role
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
@@ -25,19 +27,12 @@ class CrearTareaRequest(BaseModel):
     descripcion: str = ""
     tiempo_extra: str = "00:00:00"
 
-@router.post("/crear-tarea")
+@router.post(
+    "/crear-tarea",
+    dependencies=[Depends(require_role("PERMISO_CREAR_TAREAS_PRODUCCION"))]
+)
 def crear_tarea(tarea_data: CrearTareaRequest):
     """Crea una nueva tarea.
-    
-    Validaciones:
-    - id_sector debe existir
-    - id_producto debe existir
-    - id_producto e id_sector deben estar relacionados en productos_sectores
-    - tiempo_extra debe estar en formato HH:MM:SS
-    - descripcion no debe superar 255 caracteres
-    
-    Args:
-        tarea_data: Datos de la tarea a crear
     """
     db = SessionLocal()
     try:

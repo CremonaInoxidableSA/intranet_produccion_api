@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from config.db import SessionLocal
 from models.productos import Productos
+
+from security.permissions import require_role
 
 class ActualizarProducto(BaseModel):
     id_producto: int
@@ -9,7 +11,10 @@ class ActualizarProducto(BaseModel):
 
 router = APIRouter(prefix="/productos", tags=["productos"])
 
-@router.post("/actualizar-nombre-producto")
+@router.post(
+    "/actualizar-nombre-producto",
+    dependencies=[Depends(require_role("PERMISO_EDITAR_PRODUCTOS_PRODUCCION"))]
+)
 def actualizar_producto(data: ActualizarProducto):
     """Actualiza el nombre de un producto si es diferente al actual y no está vacío."""
     db = SessionLocal()
