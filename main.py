@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, text
 from urllib.parse import quote_plus
@@ -8,36 +8,36 @@ from dotenv import load_dotenv
 from config import db
 from config.sql_loader import cargar_datos_iniciales
 
-from routes.sectores import router as sector_router
+from routers.sectores import router as sector_router
 
-from routes.comprobaciones import router as comprobaciones_router
+from routers.comprobaciones import router as comprobaciones_router
 
-from routes.tareas.pausarreanudar import router as pausarreanudar_router
-from routes.tareas.eliminar import router as eliminar_router
-from routes.tareas.listadotareaspersonal import router as listadotareaspersonal_router
-from routes.tareas.datosfiltrosencurso import router as datosfiltrosencurso_router
-from routes.tareas.datosfiltrosfinalizadas import router as datosfiltrosfinalizadas_router
-from routes.tareas.tareasactivasgeneral import router as tareasactivasgeneral_router
-from routes.tareas.tareasfinalizadasgeneral import router as tareasfinalizadasgeneral_router
-from routes.tareas.detalletareaactiva import router as detalletareaactiva_router
-from routes.tareas.detalletareafinalizada import router as detalletareafinalizada_router
-from routes.tareas.reiniciartiempo import router as reiniciartiempo_router
-from routes.tareas.finalizartarea import router as finalizartarea_router
-from routes.tareas.guardacambios import router as guardacambios_router
-from routes.tareas.creartarea import router as creartarea_router
+from routers.tareas.pausarreanudar import router as pausarreanudar_router
+from routers.tareas.eliminar import router as eliminar_router
+from routers.tareas.listadotareaspersonal import router as listadotareaspersonal_router
+from routers.tareas.datosfiltrosencurso import router as datosfiltrosencurso_router
+from routers.tareas.datosfiltrosfinalizadas import router as datosfiltrosfinalizadas_router
+from routers.tareas.tareasactivasgeneral import router as tareasactivasgeneral_router
+from routers.tareas.tareasfinalizadasgeneral import router as tareasfinalizadasgeneral_router
+from routers.tareas.detalletareaactiva import router as detalletareaactiva_router
+from routers.tareas.detalletareafinalizada import router as detalletareafinalizada_router
+from routers.tareas.reiniciartiempo import router as reiniciartiempo_router
+from routers.tareas.finalizartarea import router as finalizartarea_router
+from routers.tareas.guardacambios import router as guardacambios_router
+from routers.tareas.creartarea import router as creartarea_router
 
-from routes.productos.actualizarproductos import router as actualizarproductos_router
-from routes.productos.listaproductos import router as listaproductos_router
-from routes.productos.eliminarproductos import router as eliminarproductos_router
-from routes.productos.crearproducto import router as crearproducto_router
+from routers.productos.actualizarproductos import router as actualizarproductos_router
+from routers.productos.listaproductos import router as listaproductos_router
+from routers.productos.eliminarproductos import router as eliminarproductos_router
+from routers.productos.crearproducto import router as crearproducto_router
 
-from routes.labores.listalabores import router as labores_router
-from routes.labores.crearlabor import router as crearlabor_router
-from routes.labores.eliminarlabor import router as eliminarlabor_router
+from routers.labores.listalabores import router as labores_router
+from routers.labores.crearlabor import router as crearlabor_router
+from routers.labores.eliminarlabor import router as eliminarlabor_router
 
-from routes.reportes.descargarreportes import router as descargarreportes_router
+from routers.reportes.descargarreportes import router as descargarreportes_router
 
-from routes.backups.descargarbackups import router as descargarbackups_router
+from routers.backups.descargarbackups import router as descargarbackups_router
 
 from models.tareas import Tareas
 from models.labores import Labores
