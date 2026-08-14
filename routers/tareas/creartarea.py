@@ -13,10 +13,10 @@ from security.permissions import require_role
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
 class CrearTareaRequest(BaseModel):
-    id_usuario_logeado: int
+    id_usuario_logeado: str
     nombre_usuario_logeado: str
     apellido_usuario_logeado: str
-    id_operario_seleccionado: int
+    id_operario_seleccionado: str
     nombre_operario_seleccionado: str
     apellido_operario_seleccionado: str
     id_sector: int

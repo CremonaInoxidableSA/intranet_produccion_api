@@ -5,10 +5,10 @@ class Tareas(Base):
     __tablename__ = "tareas"
 
     id_tarea = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    id_operario_seleccionado = Column(Integer, nullable=False)
+    id_operario_seleccionado = Column(String(255), nullable=False)
     nombre_operario_seleccionado = Column(String(100), nullable=False)
     apellido_operario_seleccionado = Column(String(100), nullable=False)
-    id_usuario_logeado = Column(Integer, nullable=False)
+    id_usuario_logeado = Column(String(255), nullable=False)
     nombre_usuario_logeado = Column(String(100), nullable=False)
     apellido_usuario_logeado = Column(String(100), nullable=False)
     numero_op = Column(Integer, nullable=False)

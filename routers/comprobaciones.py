@@ -11,7 +11,7 @@ router = APIRouter(prefix="/comprobaciones", tags=["comprobaciones"])
     "/tarea-activa-operario",
     dependencies=[Depends(require_role("PERMISO_CREAR_TAREAS_PRODUCCION"))]
 )
-def verificar_tarea_activa(id_operario: int):
+def verificar_tarea_activa(id_operario: str):
     """Verifica si existe una tarea activa para el operario especificado (por ID).
     """
     db = SessionLocal()
