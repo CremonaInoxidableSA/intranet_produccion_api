@@ -10,10 +10,13 @@ services:
     volumes:
       - /home/ec2-user/.aws:/root/.aws:ro
     networks:
+      - intranet_api_keycloak_network
       - intranet_gestion_auth_network
-    environment:
-      DB_HOST: mysql-db-api-auth
+    external_links:
+      - mysql-db-api-keycloak:mysql-db-api-keycloak
 
 networks:
+  intranet_api_keycloak_network:
+    external: true
   intranet_gestion_auth_network:
     external: true
