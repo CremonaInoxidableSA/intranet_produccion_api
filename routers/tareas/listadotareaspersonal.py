@@ -10,7 +10,7 @@ router = APIRouter(prefix="/tareas", tags=["tareas"])
     "/listado-tareas-personal",
     dependencies=[Depends(require_role("PERMISO_CONSULTAR_TAREAS_PRODUCCION"))]
 )
-def obtener_tareas_usuario(id_current_user: int):
+def obtener_tareas_usuario(id_current_user: str):
     """Obtiene las tareas activas (sin fecha_fin) del usuario actual.    
     """
     db = SessionLocal()
