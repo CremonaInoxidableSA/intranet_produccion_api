@@ -34,7 +34,7 @@ def obtener_detalle_tarea(id_tarea: int):
             "id_tarea": tarea.id_tarea,
             "nombre_operario_seleccionado": tarea.nombre_operario_seleccionado,
             "apellido_operario_seleccionado": tarea.apellido_operario_seleccionado,
-            "fecha_inicio": tarea.fecha_inicio,
+            "fecha_inicio": tarea.fecha_inicio.strftime("%Y-%m-%d %H:%M:%S"),
             "apellido_creador": tarea.apellido_usuario_logeado,
             "nombre_creador": tarea.nombre_usuario_logeado,
             "nombre_sector": sector.nombre if sector else None,
