@@ -77,6 +77,8 @@ def obtener_tareas_activas_general(filtros: FiltrosTareasActivas):
             tareas_data.append({
                 "id_tarea": tarea.id_tarea,
                 "fecha_inicio": tarea.fecha_inicio,
+                "apellido_creador": tarea.apellido_usuario_logeado,
+                "nombre_creador": tarea.nombre_usuario_logeado,
                 "nombre_operario_seleccionado": tarea.nombre_operario_seleccionado,
                 "apellido_operario_seleccionado": tarea.apellido_operario_seleccionado,
                 "nombre_producto": producto.nombre if producto else None,
