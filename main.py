@@ -30,10 +30,12 @@ from routers.productos.actualizarproductos import router as actualizarproductos_
 from routers.productos.listaproductos import router as listaproductos_router
 from routers.productos.eliminarproductos import router as eliminarproductos_router
 from routers.productos.crearproducto import router as crearproducto_router
+from routers.productos.duplicarproducto import router as duplicarproducto_router
 
 from routers.labores.listalabores import router as labores_router
 from routers.labores.crearlabor import router as crearlabor_router
 from routers.labores.eliminarlabor import router as eliminarlabor_router
+from routers.labores.actualizarlabores import router as actualizarlabores_router
 
 from routers.reportes.descargarreportes import router as descargarreportes_router
 
@@ -74,9 +76,11 @@ app.include_router(actualizarproductos_router)
 app.include_router(listaproductos_router)
 app.include_router(eliminarproductos_router)
 app.include_router(crearproducto_router)
+app.include_router(duplicarproducto_router)
 app.include_router(labores_router)
 app.include_router(crearlabor_router)
 app.include_router(eliminarlabor_router)
+app.include_router(actualizarlabores_router)
 app.include_router(descargarreportes_router)
 app.include_router(pausarreanudar_router)
 app.include_router(eliminar_router)

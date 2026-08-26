@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List
+from sqlalchemy import func
 from config.db import SessionLocal
 from models.productos import Productos
 from models.productos_sectores import ProductosSectores
@@ -32,11 +33,20 @@ def crear_producto(data: CrearProductoRequest):
         
         if data.nombre and data.nombre.strip() == "Otro":
             raise HTTPException(status_code=400, detail="El nombre del producto no puede ser 'Otro'")
+        
+        producto_existente = db.query(Productos).filter(
+            func.lower(Productos.nombre) == func.lower(data.nombre.strip())
+        ).first()
+        
+        if producto_existente:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Ya existe un producto con el nombre '{data.nombre.strip()}'"
+            )
 
         if not data.id_sectores or len(data.id_sectores) == 0:
             raise HTTPException(status_code=400, detail="Debe asignar al menos un sector al producto")
         
-        # Verificar que todos los sectores existan en la tabla de sectores
         sectores_validos = db.query(Sectores.id_sector).filter(
             Sectores.id_sector.in_(data.id_sectores)
         ).all()

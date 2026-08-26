@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from sqlalchemy import func
 from config.db import SessionLocal
 from models.labores import Labores
 from models.productos_sectores import ProductosSectores
@@ -70,8 +71,7 @@ def crear_labor(data: CrearLaborRequest):
             )
         
         labor_existente = db.query(Labores).filter(
-            Labores.nombre == data.nombre.strip(),
-            Labores.id_sector == data.id_sector,
+            func.lower(Labores.nombre) == func.lower(data.nombre.strip()),
             Labores.id_producto == data.id_producto,
             Labores.habilitado == True
         ).first()
@@ -79,7 +79,7 @@ def crear_labor(data: CrearLaborRequest):
         if labor_existente:
             return JSONResponse(
                 status_code=400,
-                content={"success": False, "detail": "Ya existe un labor para este sector y producto con el mismo nombre"}
+                content={"success": False, "detail": "Ya existe un labor con el mismo nombre para este producto"}
             )
         
         nuevo_labor = Labores(
