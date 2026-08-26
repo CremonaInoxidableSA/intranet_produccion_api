@@ -41,6 +41,8 @@ from routers.reportes.descargarreportes import router as descargarreportes_route
 
 from routers.backups.descargarbackups import router as descargarbackups_router
 
+from routers.panel.tareasporoperario import router as tareasporoperario_router
+
 from models.tareas import Tareas
 from models.labores import Labores
 from models.productos import Productos
@@ -86,6 +88,7 @@ app.include_router(pausarreanudar_router)
 app.include_router(eliminar_router)
 app.include_router(creartarea_router)
 app.include_router(detalletareaactiva_router)
+app.include_router(tareasporoperario_router)
 app.include_router(detalletareafinalizada_router)
 app.include_router(datosfiltrosencurso_router)
 app.include_router(datosfiltrosfinalizadas_router)
