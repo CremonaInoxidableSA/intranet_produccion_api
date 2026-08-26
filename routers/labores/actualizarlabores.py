@@ -13,7 +13,7 @@ class ActualizarNombreLaborRequest(BaseModel):
 
 router = APIRouter(prefix="/labores", tags=["labores"])
 
-@router.put(
+@router.post(
     "/actualizar-nombre-labor",
     dependencies=[Depends(require_role("PERMISO_EDITAR_LABORES_PRODUCCION"))]
 )
