@@ -1,4 +1,7 @@
 from datetime import datetime
+from config.db import SessionLocal
+from models.tareas import Tareas
+from sqlalchemy import func
 
 def calcular_tiempo_cronometrado(fecha_inicio, fecha_fin, pausas_reanudaciones):
     """
