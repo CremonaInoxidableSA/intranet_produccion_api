@@ -11,7 +11,7 @@ router = APIRouter(prefix="/productos", tags=["productos"])
 
 @router.post(
     "/eliminar-producto",
-    dependencies=[Depends(require_role("PERMISO_EDITAR_PRODUCTOS_PRODUCCION"))]
+    dependencies=[Depends(require_role("PERMISO_ELIMINAR_PRODUCTOS_PRODUCCION"))]
 ) 
 def eliminar_producto(data: EliminarProducto):
     """Elimina un producto si existe."""
