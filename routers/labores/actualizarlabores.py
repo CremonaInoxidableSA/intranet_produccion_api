@@ -15,7 +15,7 @@ router = APIRouter(prefix="/labores", tags=["labores"])
 
 @router.put(
     "/actualizar-nombre-labor",
-    dependencies=[Depends(require_role("PERMISO_ACTUALIZAR_LABORES_PRODUCCION"))]
+    dependencies=[Depends(require_role("PERMISO_EDITAR_LABORES_PRODUCCION"))]
 )
 def actualizar_nombre_labor(data: ActualizarNombreLaborRequest):
     """Actualiza el nombre de un labor.
