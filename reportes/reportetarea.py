@@ -120,6 +120,7 @@ def obtener_datos_tarea(id_tarea):
                 t.id_sector,
                 t.id_producto,
                 t.nombre_labor,
+                t.cantidad,
                 t.id_operario_seleccionado,
                 t.id_usuario_logeado,
                 sec.nombre AS nombre_sector,
@@ -150,14 +151,15 @@ def obtener_datos_tarea(id_tarea):
             "id_sector": row[6],
             "id_producto": row[7],
             "nombre_labor": row[8],
-            "id_operario": row[9],
-            "id_usuario_creador": row[10],
-            "nombre_sector": row[11],
-            "nombre_producto": row[12],
-            "nombre_operario": row[13],
-            "apellido_operario": row[14],
-            "apellido_usuario": row[15],
-            "nombre_usuario": row[16]
+            "cantidad": row[9],
+            "id_operario": row[10],
+            "id_usuario_creador": row[11],
+            "nombre_sector": row[12],
+            "nombre_producto": row[13],
+            "nombre_operario": row[14],
+            "apellido_operario": row[15],
+            "apellido_usuario": row[16],
+            "nombre_usuario": row[17]
         }
         return datos
     finally:
@@ -221,6 +223,7 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
             "Sector",
             "Producto",
             "Labor",
+            "Cantidad",
             "Operario",
             "Creador de la tarea"
         ]
@@ -269,13 +272,14 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
             datos_tarea["nombre_sector"] or "",
             datos_tarea["nombre_producto"] or "",
             datos_tarea["nombre_labor"] or "",
+            datos_tarea["cantidad"] or "",
             operario_nombre,
             usuario_nombre
         ])
         
         # Crear tabla
         first_table_last_row = ws.max_row
-        first_table = Table(displayName="ResumenTareaRealizada", ref=f"A{first_table_first_row}:K{first_table_last_row}")
+        first_table = Table(displayName="ResumenTareaRealizada", ref=f"A{first_table_first_row}:L{first_table_last_row}")
         first_style = TableStyleInfo(
             name="TableStyleMedium9", showFirstColumn=False,
             showLastColumn=False, showRowStripes=True, showColumnStripes=False
@@ -293,8 +297,9 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
         ws.column_dimensions['G'].width = 15
         ws.column_dimensions['H'].width = 15
         ws.column_dimensions['I'].width = 15
-        ws.column_dimensions['J'].width = 20
+        ws.column_dimensions['J'].width = 10
         ws.column_dimensions['K'].width = 20
+        ws.column_dimensions['L'].width = 20
         
         # Guardar el workbook
         wb.save(file_path)

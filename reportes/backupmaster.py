@@ -60,6 +60,7 @@ def obtener_todas_tareas_finalizadas():
                 t.id_sector,
                 t.id_producto,
                 t.nombre_labor,
+                t.cantidad,
                 t.id_operario_seleccionado,
                 t.id_usuario_logeado,
                 sec.nombre AS nombre_sector,
@@ -92,14 +93,15 @@ def obtener_todas_tareas_finalizadas():
                 "id_sector": row[6],
                 "id_producto": row[7],
                 "nombre_labor": row[8],
-                "id_operario": row[9],
-                "id_usuario_creador": row[10],
-                "nombre_sector": row[11],
-                "nombre_producto": row[12],
-                "nombre_operario": row[13],
-                "apellido_operario": row[14],
-                "apellido_usuario": row[15],
-                "nombre_usuario": row[16]
+                "cantidad": row[9],
+                "id_operario": row[10],
+                "id_usuario_creador": row[11],
+                "nombre_sector": row[12],
+                "nombre_producto": row[13],
+                "nombre_operario": row[14],
+                "apellido_operario": row[15],
+                "apellido_usuario": row[16],
+                "nombre_usuario": row[17]
             }
             tareas.append(datos)
         return tareas
@@ -133,7 +135,7 @@ def export_todas_tareas_finalizadas_to_excel(file_path):
             img = XLImage(logo_path)
             img.height = 31.5
             img.width = 126
-            ws.add_image(img, "E3")
+            ws.add_image(img, "F3")
         
         ws.merge_cells("A1:K1")
         ws["A1"] = "REPORTE MASTER DE TAREAS"
@@ -149,6 +151,7 @@ def export_todas_tareas_finalizadas_to_excel(file_path):
         ws.append([])
         
         headers = [
+            "ID",
             "Fecha de inicio de la tarea\n[YYYY-MM-DD HH:MM:SS]",
             "Fecha de finalización de la tarea\n[YYYY-MM-DD HH:MM:SS]",
             "Tiempo bruto [HH:MM:SS]",
@@ -158,6 +161,7 @@ def export_todas_tareas_finalizadas_to_excel(file_path):
             "Sector",
             "Producto",
             "Labor",
+            "Cantidad",
             "Operario",
             "Creador de la tarea"
         ]
@@ -190,6 +194,7 @@ def export_todas_tareas_finalizadas_to_excel(file_path):
                 usuario_nombre = f"{datos_tarea['apellido_usuario']} {datos_tarea['nombre_usuario']}"
             
             ws.append([
+                datos_tarea["id"],
                 fecha_inicio_str,
                 fecha_fin_str,
                 tiempo_bruto,
@@ -199,12 +204,13 @@ def export_todas_tareas_finalizadas_to_excel(file_path):
                 datos_tarea["nombre_sector"] or "",
                 datos_tarea["nombre_producto"] or "",
                 datos_tarea["nombre_labor"] or "",
+                datos_tarea["cantidad"] or "",
                 operario_nombre,
                 usuario_nombre
             ])
         
         first_table_last_row = ws.max_row
-        first_table = Table(displayName="ReporteMasterTareas", ref=f"A{first_table_first_row}:K{first_table_last_row}")
+        first_table = Table(displayName="ReporteMasterTareas", ref=f"A{first_table_first_row}:M{first_table_last_row}")
         first_style = TableStyleInfo(
             name="TableStyleMedium9", showFirstColumn=False,
             showLastColumn=False, showRowStripes=True, showColumnStripes=False
@@ -212,17 +218,19 @@ def export_todas_tareas_finalizadas_to_excel(file_path):
         first_table.tableStyleInfo = first_style
         ws.add_table(first_table)
         
-        ws.column_dimensions['A'].width = 25
-        ws.column_dimensions['B'].width = 32
-        ws.column_dimensions['C'].width = 18
+        ws.column_dimensions['A'].width = 8
+        ws.column_dimensions['B'].width = 25
+        ws.column_dimensions['C'].width = 32
         ws.column_dimensions['D'].width = 18
-        ws.column_dimensions['E'].width = 10
+        ws.column_dimensions['E'].width = 18
         ws.column_dimensions['F'].width = 10
-        ws.column_dimensions['G'].width = 15
+        ws.column_dimensions['G'].width = 10
         ws.column_dimensions['H'].width = 15
         ws.column_dimensions['I'].width = 15
-        ws.column_dimensions['J'].width = 20
-        ws.column_dimensions['K'].width = 20
+        ws.column_dimensions['J'].width = 15
+        ws.column_dimensions['K'].width = 10
+        ws.column_dimensions['L'].width = 20
+        ws.column_dimensions['M'].width = 20
         
         wb.save(file_path)
         logger.info(f"Excel generado exitosamente en: {file_path}")

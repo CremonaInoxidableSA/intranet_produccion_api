@@ -24,3 +24,4 @@ class Tareas(Base):
     tiempo_cronometrado = Column(String(100), nullable=True)
     tiempo_total = Column(String(100), nullable=True)
     pausas_reanudaciones = Column(JSON, nullable=True)
+    cantidad = Column(Integer, nullable=True)

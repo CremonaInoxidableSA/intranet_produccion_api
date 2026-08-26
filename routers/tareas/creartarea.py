@@ -26,6 +26,7 @@ class CrearTareaRequest(BaseModel):
     nombre_labor: str
     descripcion: str = ""
     tiempo_extra: str = "00:00:00"
+    cantidad: int = None
 
 @router.post(
     "/crear-tarea",
@@ -36,7 +37,6 @@ def crear_tarea(tarea_data: CrearTareaRequest):
     """
     db = SessionLocal()
     try:
-        # Verificar que no exista una tarea activa para el operario seleccionado
         tarea_activa = db.query(Tareas).filter(
             Tareas.id_operario_seleccionado == tarea_data.id_operario_seleccionado,
             Tareas.estado == "activa"
@@ -92,6 +92,7 @@ def crear_tarea(tarea_data: CrearTareaRequest):
             descripcion=tarea_data.descripcion,
             fecha_inicio=datetime.now(),
             tiempo_extra=tarea_data.tiempo_extra,
+            cantidad=tarea_data.cantidad,
             estado="activa"
         )
         

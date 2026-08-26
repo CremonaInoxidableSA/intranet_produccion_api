@@ -44,6 +44,7 @@ def obtener_detalle_tarea(id_tarea: int):
             "nombre_labor": tarea.nombre_labor,
             "descripcion": tarea.descripcion if tarea.descripcion else "",
             "tiempo_extra": tarea.tiempo_extra if tarea.tiempo_extra else "00:00:00",
+            "cantidad": tarea.cantidad if tarea.cantidad else 0,
             "estado": tarea.estado
             }        
 
@@ -122,6 +123,7 @@ def obtener_detalle_tarea_activa_general(id_tarea: int):
             "nombre_producto": producto.nombre if producto else None,
             "nombre_labor": tarea.nombre_labor,
             "descripcion": tarea.descripcion if tarea.descripcion else "",
+            "cantidad": tarea.cantidad if tarea.cantidad else 0,
             "tiempo_extra": tarea.tiempo_extra if tarea.tiempo_extra else "00:00:00"
             }        
 

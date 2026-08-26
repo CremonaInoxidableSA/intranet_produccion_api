@@ -48,6 +48,7 @@ def obtener_detalle_tarea_finalizada_general(id_tarea: int):
             "tiempo_extra": tarea.tiempo_extra if tarea.tiempo_extra else "00:00:00",
             "tiempo_cronometrado": tarea.tiempo_cronometrado,
             "tiempo_total": tarea.tiempo_total,
+            "cantidad": tarea.cantidad if tarea.cantidad else 0,
             "eventos": procesar_eventos(tarea.pausas_reanudaciones)
         }        
 
