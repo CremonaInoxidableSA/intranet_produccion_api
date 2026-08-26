@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
+from sqlalchemy import func
 from config.db import SessionLocal
 from models.productos import Productos
 
@@ -45,6 +46,17 @@ def actualizar_producto(data: ActualizarProducto):
         if data.nombre.strip() == producto.nombre:
             return {
                 "detail": "El nombre del producto debe ser diferente al actual",
+                "success": False
+            }
+        
+        producto_existente = db.query(Productos).filter(
+            func.lower(Productos.nombre) == func.lower(data.nombre.strip()),
+            Productos.id_producto != data.id_producto
+        ).first()
+        
+        if producto_existente:
+            return {
+                "detail": f"Ya existe otro producto con el nombre '{data.nombre.strip()}'",
                 "success": False
             }
 
