@@ -176,10 +176,8 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
     """
     logger.info(f"Exportando datos de tarea individual para ID: {id_tarea}")
     
-    # Obtener datos de la tarea
     datos_tarea = obtener_datos_tarea(id_tarea)
     
-    # Si no hay datos, retornar False
     if not datos_tarea:
         logger.info(f"No se encontraron datos para la tarea ID: {id_tarea}")
         return False
@@ -191,28 +189,24 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
         
         logo_path = os.path.join(os.path.dirname(__file__), "..", "imagenes", "cremonarecort.png")
         
-        # Insertar logo
         if os.path.exists(logo_path):
             img = XLImage(logo_path)
             img.height = 31.5
             img.width = 126
-            ws.add_image(img, "K3")
+            ws.add_image(img, "L3")
         
-        # Encabezado principal
-        ws.merge_cells("A1:K1")
+        ws.merge_cells("A1:L1")
         ws["A1"] = "RESUMEN DE TAREA REALIZADA"
         ws["A1"].font = Font(size=16, bold=True, color="FFFFFF")
         ws["A1"].alignment = Alignment(horizontal="center")
         ws["A1"].fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
         
-        # Información de la tarea referenciada
         ws["A3"] = "ID tarea referenciada:"
         ws["A3"].font = Font(size=12, bold=True)
         ws["B3"] = id_tarea
         
         ws.append([])
         
-        # Encabezados de la tabla
         headers = [
             "Fecha de inicio de la tarea\n[YYYY-MM-DD HH:MM:SS]",
             "Fecha de finalización de la tarea\n[YYYY-MM-DD HH:MM:SS]",
@@ -228,31 +222,24 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
             "Creador de la tarea"
         ]
         
-        # Agregar encabezados a la hoja
         ws.append(headers)
         first_table_first_row = ws.max_row
         
-        # Aplicar formato a los encabezados
         for col in range(1, len(headers) + 1):
             cell = ws.cell(row=first_table_first_row, column=col)
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             cell.font = Font(bold=True, color="FFFFFF")
             cell.fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
         
-        # Ajustar altura de la fila de encabezados
         ws.row_dimensions[first_table_first_row].height = 45
         
-        # Calcular tiempo bruto (fecha_fin - fecha_inicio)
         tiempo_bruto = calcular_tiempo_diferencia(datos_tarea["fecha_inicio"], datos_tarea["fecha_fin"])
         
-        # Formatear fechas
         fecha_inicio_str = datos_tarea["fecha_inicio"].strftime("%Y-%m-%d %H:%M:%S") if datos_tarea["fecha_inicio"] else ""
         fecha_fin_str = datos_tarea["fecha_fin"].strftime("%Y-%m-%d %H:%M:%S") if datos_tarea["fecha_fin"] else ""
         
-        # Tiempo neto (tiempo_total de la tarea)
         tiempo_neto = datos_tarea["tiempo_total"] or "00:00:00"
         
-        # Nombres concatenados
         operario_nombre = ""
         if datos_tarea["apellido_operario"] and datos_tarea["nombre_operario"]:
             operario_nombre = f"{datos_tarea['apellido_operario']} {datos_tarea['nombre_operario']}"
@@ -261,7 +248,6 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
         if datos_tarea["apellido_usuario"] and datos_tarea["nombre_usuario"]:
             usuario_nombre = f"{datos_tarea['apellido_usuario']} {datos_tarea['nombre_usuario']}"
         
-        # Agregar fila de datos
         ws.append([
             fecha_inicio_str,
             fecha_fin_str,
@@ -277,7 +263,6 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
             usuario_nombre
         ])
         
-        # Crear tabla
         first_table_last_row = ws.max_row
         first_table = Table(displayName="ResumenTareaRealizada", ref=f"A{first_table_first_row}:L{first_table_last_row}")
         first_style = TableStyleInfo(
@@ -287,7 +272,6 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
         first_table.tableStyleInfo = first_style
         ws.add_table(first_table)
         
-        # Ajustar ancho de columnas
         ws.column_dimensions['A'].width = 25
         ws.column_dimensions['B'].width = 32
         ws.column_dimensions['C'].width = 18
@@ -301,7 +285,6 @@ def export_tarea_individual_to_excel(file_path, id_tarea):
         ws.column_dimensions['K'].width = 20
         ws.column_dimensions['L'].width = 20
         
-        # Guardar el workbook
         wb.save(file_path)
         logger.info(f"Excel generado exitosamente en: {file_path}")
         return True

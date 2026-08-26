@@ -137,7 +137,7 @@ def export_todas_tareas_finalizadas_to_excel(file_path):
             img.width = 126
             ws.add_image(img, "F3")
         
-        ws.merge_cells("A1:K1")
+        ws.merge_cells("A1:M1")
         ws["A1"] = "REPORTE MASTER DE TAREAS"
         ws["A1"].font = Font(size=16, bold=True, color="FFFFFF")
         ws["A1"].alignment = Alignment(horizontal="center")

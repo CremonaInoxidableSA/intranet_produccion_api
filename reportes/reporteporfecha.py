@@ -193,9 +193,9 @@ def export_tareas_por_fecha_to_excel(file_path, fecha_inicio, fecha_fin):
             img = XLImage(logo_path)
             img.height = 31.5
             img.width = 126
-            ws.add_image(img, "L3")
+            ws.add_image(img, "M3")
         
-        ws.merge_cells("A1:K1")
+        ws.merge_cells("A1:M1")
         ws["A1"] = "REPORTE DE TAREAS POR FECHA"
         ws["A1"].font = Font(size=16, bold=True, color="FFFFFF")
         ws["A1"].alignment = Alignment(horizontal="center")
