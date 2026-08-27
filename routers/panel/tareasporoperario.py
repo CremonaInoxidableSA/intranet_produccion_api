@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
+import httpx
 from config.db import SessionLocal
 from models.tareas import Tareas
 from models.sectores import Sectores
@@ -8,6 +9,8 @@ from sqlalchemy import func
 from utils.tiempo_utils import calcular_tiempo_cronometrado, formato_hhmmss
 
 from security.permissions import require_role
+from security.dependencies import get_current_user
+from schemas.authenticated_user import AuthenticatedUser
 
 router = APIRouter(prefix="/tareas", tags=["tareas"])
 
@@ -15,23 +18,40 @@ router = APIRouter(prefix="/tareas", tags=["tareas"])
     "/operarios-estado",
     dependencies=[Depends(require_role("PERMISO_CONSULTAR_PANEL_PRODUCCION"))]
 )
-def obtener_operarios_estado():
+async def obtener_operarios_estado(current_user: AuthenticatedUser = Depends(get_current_user)):
     """
     Retorna un listado de cada operario y su estado de tareas.
+    Obtiene la lista completa de operarios desde la API externa.
     """
     db = SessionLocal()
     try:
-        operarios_unicos = db.query(
-            Tareas.id_operario_seleccionado,
-            Tareas.nombre_operario_seleccionado,
-            Tareas.apellido_operario_seleccionado
-        ).distinct().all()
+        headers = {
+            "Authorization": f"Bearer {current_user.sub}"
+        }
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "https://apikeycloak.intranetcreminox.com/usuarios-produccion/lista?filtro=0",
+                headers=headers
+            )
+            response.raise_for_status()
+            operarios_externos = response.json()
         
         operarios_data = []
         total_activos = 0
         total_inactivos = 0
         
-        for op_id, op_nombre, op_apellido in operarios_unicos:
+        for operario_ext in operarios_externos:
+            op_id = operario_ext["id"]
+            op_nombre = operario_ext["nombre"]
+            op_apellido = operario_ext["apellido"]
+            
+            operario_info = {
+                "nombre_operario": op_nombre,
+                "apellido_operario": op_apellido,
+                "numero_tareas_pausa": 0
+            }
+            
             # Buscar tarea activa para este operario
             tarea_activa = db.query(Tareas).filter(
                 Tareas.id_operario_seleccionado == op_id,
@@ -44,11 +64,7 @@ def obtener_operarios_estado():
                 Tareas.estado == "pausada"
             ).scalar() or 0
             
-            operario_info = {
-                "nombre_operario": op_nombre,
-                "apellido_operario": op_apellido,
-                "numero_tareas_pausa": tareas_pausadas
-            }
+            operario_info["numero_tareas_pausa"] = tareas_pausadas
             
             if tarea_activa:
                 # Calcular tiempo cronometrado
@@ -89,7 +105,6 @@ def obtener_operarios_estado():
             operarios_data.append(operario_info)
         
         return {
-            "success": True,
             "operarios": operarios_data,
             "total_operarios_activos": total_activos,
             "total_operarios_inactivos": total_inactivos
