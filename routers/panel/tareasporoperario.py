@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from pydantic import BaseModel
 import httpx
 from config.db import SessionLocal
@@ -18,15 +18,21 @@ router = APIRouter(prefix="/tareas", tags=["tareas"])
     "/operarios-estado",
     dependencies=[Depends(require_role("PERMISO_CONSULTAR_PANEL_PRODUCCION"))]
 )
-async def obtener_operarios_estado(current_user: AuthenticatedUser = Depends(get_current_user)):
+async def obtener_operarios_estado(
+    current_user: AuthenticatedUser = Depends(get_current_user),
+    request: Request = None
+):
     """
     Retorna un listado de cada operario y su estado de tareas.
     Obtiene la lista completa de operarios desde la API externa.
     """
     db = SessionLocal()
     try:
+        # Obtener el token JWT del header Authorization
+        auth_header = request.headers.get("authorization", "")
+        
         headers = {
-            "Authorization": f"Bearer {current_user.sub}"
+            "Authorization": auth_header
         }
         
         async with httpx.AsyncClient() as client:
